@@ -1,4 +1,11 @@
-src/backend/access/nbtree/README
+src/backend/access/idist/README
+
+iDistance Indexing
+==============
+
+Built on top of the original nbtree code.
+
+
 
 Btree Indexing
 ==============

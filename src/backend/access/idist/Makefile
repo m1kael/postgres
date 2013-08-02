@@ -1,18 +1,18 @@
 #-------------------------------------------------------------------------
 #
 # Makefile--
-#    Makefile for access/nbtree
+#    Makefile for access/idist
 #
 # IDENTIFICATION
-#    src/backend/access/nbtree/Makefile
+#    src/backend/access/idist/Makefile
 #
 #-------------------------------------------------------------------------
 
-subdir = src/backend/access/nbtree
+subdir = src/backend/access/idist
 top_builddir = ../../../..
 include $(top_builddir)/src/Makefile.global
 
-OBJS = nbtcompare.o nbtinsert.o nbtpage.o nbtree.o nbtsearch.o \
-       nbtutils.o nbtsort.o nbtxlog.o
+OBJS = idistcompare.o idistinsert.o idistpage.o idistree.o idistsearch.o \
+       idistutils.o idistsort.o idistxlog.o
 
 include $(top_srcdir)/src/backend/common.mk

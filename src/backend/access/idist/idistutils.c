@@ -8,7 +8,7 @@
  *
  *
  * IDENTIFICATION
- *	  src/backend/access/nbtree/nbtutils.c
+ *	  src/backend/access/idist/nbtutils.c
  *
  *-------------------------------------------------------------------------
  */
@@ -17,7 +17,7 @@
 
 #include <time.h>
 
-#include "access/nbtree.h"
+#include "access/idist.h"
 #include "access/reloptions.h"
 #include "access/relscan.h"
 #include "miscadmin.h"
@@ -27,39 +27,39 @@
 #include "utils/rel.h"
 
 
-typedef struct BTSortArrayContext
+typedef struct IDBTSortArrayContext
 {
 	FmgrInfo	flinfo;
 	Oid			collation;
 	bool		reverse;
-} BTSortArrayContext;
+} IDBTSortArrayContext;
 
-static Datum _bt_find_extreme_element(IndexScanDesc scan, ScanKey skey,
+static Datum _idbt_find_extreme_element(IndexScanDesc scan, ScanKey skey,
 						 StrategyNumber strat,
 						 Datum *elems, int nelems);
-static int _bt_sort_array_elements(IndexScanDesc scan, ScanKey skey,
+static int _idbt_sort_array_elements(IndexScanDesc scan, ScanKey skey,
 						bool reverse,
 						Datum *elems, int nelems);
-static int	_bt_compare_array_elements(const void *a, const void *b, void *arg);
-static bool _bt_compare_scankey_args(IndexScanDesc scan, ScanKey op,
+static int	_idbt_compare_array_elements(const void *a, const void *b, void *arg);
+static bool _idbt_compare_scankey_args(IndexScanDesc scan, ScanKey op,
 						 ScanKey leftarg, ScanKey rightarg,
 						 bool *result);
-static bool _bt_fix_scankey_strategy(ScanKey skey, int16 *indoption);
-static void _bt_mark_scankey_required(ScanKey skey);
-static bool _bt_check_rowcompare(ScanKey skey,
+static bool _idbt_fix_scankey_strategy(ScanKey skey, int16 *indoption);
+static void _idbt_mark_scankey_required(ScanKey skey);
+static bool _idbt_check_rowcompare(ScanKey skey,
 					 IndexTuple tuple, TupleDesc tupdesc,
 					 ScanDirection dir, bool *continuescan);
 
 
 /*
- * _bt_mkscankey
+ * _idbt_mkscankey
  *		Build an insertion scan key that contains comparison data from itup
  *		as well as comparator routines appropriate to the key datatypes.
  *
- *		The result is intended for use with _bt_compare().
+ *		The result is intended for use with _idbt_compare().
  */
 ScanKey
-_bt_mkscankey(Relation rel, IndexTuple itup)
+_idbt_mkscankey(Relation rel, IndexTuple itup)
 {
 	ScanKey		skey;
 	TupleDesc	itupdesc;
@@ -84,9 +84,9 @@ _bt_mkscankey(Relation rel, IndexTuple itup)
 		 * We can use the cached (default) support procs since no cross-type
 		 * comparison can be needed.
 		 */
-		procinfo = index_getprocinfo(rel, i + 1, BTORDER_PROC);
+		procinfo = index_getprocinfo(rel, i + 1, IDBTORDER_PROC);
 		arg = index_getattr(itup, i + 1, itupdesc, &null);
-		flags = (null ? SK_ISNULL : 0) | (indoption[i] << SK_BT_INDOPTION_SHIFT);
+		flags = (null ? SK_ISNULL : 0) | (indoption[i] << SK_IDBT_INDOPTION_SHIFT);
 		ScanKeyEntryInitializeWithInfo(&skey[i],
 									   flags,
 									   (AttrNumber) (i + 1),
@@ -101,18 +101,18 @@ _bt_mkscankey(Relation rel, IndexTuple itup)
 }
 
 /*
- * _bt_mkscankey_nodata
+ * _idbt_mkscankey_nodata
  *		Build an insertion scan key that contains 3-way comparator routines
  *		appropriate to the key datatypes, but no comparison data.  The
  *		comparison data ultimately used must match the key datatypes.
  *
- *		The result cannot be used with _bt_compare(), unless comparison
+ *		The result cannot be used with _idbt_compare(), unless comparison
  *		data is first stored into the key entries.	Currently this
  *		routine is only called by nbtsort.c and tuplesort.c, which have
  *		their own comparison routines.
  */
 ScanKey
-_bt_mkscankey_nodata(Relation rel)
+_idbt_mkscankey_nodata(Relation rel)
 {
 	ScanKey		skey;
 	int			natts;
@@ -133,8 +133,8 @@ _bt_mkscankey_nodata(Relation rel)
 		 * We can use the cached (default) support procs since no cross-type
 		 * comparison can be needed.
 		 */
-		procinfo = index_getprocinfo(rel, i + 1, BTORDER_PROC);
-		flags = SK_ISNULL | (indoption[i] << SK_BT_INDOPTION_SHIFT);
+		procinfo = index_getprocinfo(rel, i + 1, IDBTORDER_PROC);
+		flags = SK_ISNULL | (indoption[i] << SK_IDBT_INDOPTION_SHIFT);
 		ScanKeyEntryInitializeWithInfo(&skey[i],
 									   flags,
 									   (AttrNumber) (i + 1),
@@ -149,21 +149,21 @@ _bt_mkscankey_nodata(Relation rel)
 }
 
 /*
- * free a scan key made by either _bt_mkscankey or _bt_mkscankey_nodata.
+ * free a scan key made by either _idbt_mkscankey or _idbt_mkscankey_nodata.
  */
 void
-_bt_freeskey(ScanKey skey)
+_idbt_freeskey(ScanKey skey)
 {
 	pfree(skey);
 }
 
 /*
- * free a retracement stack made by _bt_search.
+ * free a retracement stack made by _idbt_search.
  */
 void
-_bt_freestack(BTStack stack)
+_idbt_freestack(IDBTStack stack)
 {
-	BTStack		ostack;
+	IDBTStack		ostack;
 
 	while (stack != NULL)
 	{
@@ -175,23 +175,23 @@ _bt_freestack(BTStack stack)
 
 
 /*
- *	_bt_preprocess_array_keys() -- Preprocess SK_SEARCHARRAY scan keys
+ *	_idbt_preprocess_array_keys() -- Preprocess SK_SEARCHARRAY scan keys
  *
  * If there are any SK_SEARCHARRAY scan keys, deconstruct the array(s) and
- * set up BTArrayKeyInfo info for each one that is an equality-type key.
+ * set up IDBTArrayKeyInfo info for each one that is an equality-type key.
  * Prepare modified scan keys in so->arrayKeyData, which will hold the current
  * array elements during each primitive indexscan operation.  For inequality
  * array keys, it's sufficient to find the extreme element value and replace
  * the whole array with that scalar value.
  *
  * Note: the reason we need so->arrayKeyData, rather than just scribbling
- * on scan->keyData, is that callers are permitted to call btrescan without
+ * on scan->keyData, is that callers are permitted to call idbtrescan without
  * supplying a new set of scankey data.
  */
 void
-_bt_preprocess_array_keys(IndexScanDesc scan)
+_idbt_preprocess_array_keys(IndexScanDesc scan)
 {
-	BTScanOpaque so = (BTScanOpaque) scan->opaque;
+	IDBTScanOpaque so = (IDBTScanOpaque) scan->opaque;
 	int			numberOfKeys = scan->numberOfKeys;
 	int16	   *indoption = scan->indexRelation->rd_indoption;
 	int			numArrayKeys;
@@ -248,7 +248,7 @@ _bt_preprocess_array_keys(IndexScanDesc scan)
 		   scan->numberOfKeys * sizeof(ScanKeyData));
 
 	/* Allocate space for per-array data in the workspace context */
-	so->arrayKeys = (BTArrayKeyInfo *) palloc0(numArrayKeys * sizeof(BTArrayKeyInfo));
+	so->arrayKeys = (IDBTArrayKeyInfo *) palloc0(numArrayKeys * sizeof(IDBTArrayKeyInfo));
 
 	/* Now process each array key */
 	numArrayKeys = 0;
@@ -312,7 +312,7 @@ _bt_preprocess_array_keys(IndexScanDesc scan)
 			case BTLessStrategyNumber:
 			case BTLessEqualStrategyNumber:
 				cur->sk_argument =
-					_bt_find_extreme_element(scan, cur,
+					_idbt_find_extreme_element(scan, cur,
 											 BTGreaterStrategyNumber,
 											 elem_values, num_nonnulls);
 				continue;
@@ -322,7 +322,7 @@ _bt_preprocess_array_keys(IndexScanDesc scan)
 			case BTGreaterEqualStrategyNumber:
 			case BTGreaterStrategyNumber:
 				cur->sk_argument =
-					_bt_find_extreme_element(scan, cur,
+					_idbt_find_extreme_element(scan, cur,
 											 BTLessStrategyNumber,
 											 elem_values, num_nonnulls);
 				continue;
@@ -337,12 +337,12 @@ _bt_preprocess_array_keys(IndexScanDesc scan)
 		 * sort in the same ordering used by the index column, so that the
 		 * successive primitive indexscans produce data in index order.
 		 */
-		num_elems = _bt_sort_array_elements(scan, cur,
+		num_elems = _idbt_sort_array_elements(scan, cur,
 						(indoption[cur->sk_attno - 1] & INDOPTION_DESC) != 0,
 											elem_values, num_nonnulls);
 
 		/*
-		 * And set up the BTArrayKeyInfo data.
+		 * And set up the IDBTArrayKeyInfo data.
 		 */
 		so->arrayKeys[numArrayKeys].scan_key = i;
 		so->arrayKeys[numArrayKeys].num_elems = num_elems;
@@ -356,14 +356,14 @@ _bt_preprocess_array_keys(IndexScanDesc scan)
 }
 
 /*
- * _bt_find_extreme_element() -- get least or greatest array element
+ * _idbt_find_extreme_element() -- get least or greatest array element
  *
  * scan and skey identify the index column, whose opfamily determines the
  * comparison semantics.  strat should be BTLessStrategyNumber to get the
  * least element, or BTGreaterStrategyNumber to get the greatest.
  */
 static Datum
-_bt_find_extreme_element(IndexScanDesc scan, ScanKey skey,
+_idbt_find_extreme_element(IndexScanDesc scan, ScanKey skey,
 						 StrategyNumber strat,
 						 Datum *elems, int nelems)
 {
@@ -421,7 +421,7 @@ _bt_find_extreme_element(IndexScanDesc scan, ScanKey skey,
 }
 
 /*
- * _bt_sort_array_elements() -- sort and de-dup array elements
+ * _idbt_sort_array_elements() -- sort and de-dup array elements
  *
  * The array elements are sorted in-place, and the new number of elements
  * after duplicate removal is returned.
@@ -430,14 +430,14 @@ _bt_find_extreme_element(IndexScanDesc scan, ScanKey skey,
  * comparison semantics.  If reverse is true, we sort in descending order.
  */
 static int
-_bt_sort_array_elements(IndexScanDesc scan, ScanKey skey,
+_idbt_sort_array_elements(IndexScanDesc scan, ScanKey skey,
 						bool reverse,
 						Datum *elems, int nelems)
 {
 	Relation	rel = scan->indexRelation;
 	Oid			elemtype;
 	RegProcedure cmp_proc;
-	BTSortArrayContext cxt;
+	IDBTSortArrayContext cxt;
 	int			last_non_dup;
 	int			i;
 
@@ -464,10 +464,10 @@ _bt_sort_array_elements(IndexScanDesc scan, ScanKey skey,
 	cmp_proc = get_opfamily_proc(rel->rd_opfamily[skey->sk_attno - 1],
 								 elemtype,
 								 elemtype,
-								 BTORDER_PROC);
+								 IDBTORDER_PROC);
 	if (!RegProcedureIsValid(cmp_proc))
 		elog(ERROR, "missing support function %d(%u,%u) in opfamily %u",
-			 BTORDER_PROC, elemtype, elemtype,
+			 IDBTORDER_PROC, elemtype, elemtype,
 			 rel->rd_opfamily[skey->sk_attno - 1]);
 
 	/* Sort the array elements */
@@ -475,7 +475,7 @@ _bt_sort_array_elements(IndexScanDesc scan, ScanKey skey,
 	cxt.collation = skey->sk_collation;
 	cxt.reverse = reverse;
 	qsort_arg((void *) elems, nelems, sizeof(Datum),
-			  _bt_compare_array_elements, (void *) &cxt);
+			  _idbt_compare_array_elements, (void *) &cxt);
 
 	/* Now scan the sorted elements and remove duplicates */
 	last_non_dup = 0;
@@ -498,11 +498,11 @@ _bt_sort_array_elements(IndexScanDesc scan, ScanKey skey,
  * qsort_arg comparator for sorting array elements
  */
 static int
-_bt_compare_array_elements(const void *a, const void *b, void *arg)
+_idbt_compare_array_elements(const void *a, const void *b, void *arg)
 {
 	Datum		da = *((const Datum *) a);
 	Datum		db = *((const Datum *) b);
-	BTSortArrayContext *cxt = (BTSortArrayContext *) arg;
+	IDBTSortArrayContext *cxt = (IDBTSortArrayContext *) arg;
 	int32		compare;
 
 	compare = DatumGetInt32(FunctionCall2Coll(&cxt->flinfo,
@@ -514,20 +514,20 @@ _bt_compare_array_elements(const void *a, const void *b, void *arg)
 }
 
 /*
- * _bt_start_array_keys() -- Initialize array keys at start of a scan
+ * _idbt_start_array_keys() -- Initialize array keys at start of a scan
  *
  * Set up the cur_elem counters and fill in the first sk_argument value for
  * each array scankey.	We can't do this until we know the scan direction.
  */
 void
-_bt_start_array_keys(IndexScanDesc scan, ScanDirection dir)
+_idbt_start_array_keys(IndexScanDesc scan, ScanDirection dir)
 {
-	BTScanOpaque so = (BTScanOpaque) scan->opaque;
+	IDBTScanOpaque so = (IDBTScanOpaque) scan->opaque;
 	int			i;
 
 	for (i = 0; i < so->numArrayKeys; i++)
 	{
-		BTArrayKeyInfo *curArrayKey = &so->arrayKeys[i];
+		IDBTArrayKeyInfo *curArrayKey = &so->arrayKeys[i];
 		ScanKey		skey = &so->arrayKeyData[curArrayKey->scan_key];
 
 		Assert(curArrayKey->num_elems > 0);
@@ -540,15 +540,15 @@ _bt_start_array_keys(IndexScanDesc scan, ScanDirection dir)
 }
 
 /*
- * _bt_advance_array_keys() -- Advance to next set of array elements
+ * _idbt_advance_array_keys() -- Advance to next set of array elements
  *
  * Returns TRUE if there is another set of values to consider, FALSE if not.
  * On TRUE result, the scankeys are initialized with the next set of values.
  */
 bool
-_bt_advance_array_keys(IndexScanDesc scan, ScanDirection dir)
+_idbt_advance_array_keys(IndexScanDesc scan, ScanDirection dir)
 {
-	BTScanOpaque so = (BTScanOpaque) scan->opaque;
+	IDBTScanOpaque so = (IDBTScanOpaque) scan->opaque;
 	bool		found = false;
 	int			i;
 
@@ -560,7 +560,7 @@ _bt_advance_array_keys(IndexScanDesc scan, ScanDirection dir)
 	 */
 	for (i = so->numArrayKeys - 1; i >= 0; i--)
 	{
-		BTArrayKeyInfo *curArrayKey = &so->arrayKeys[i];
+		IDBTArrayKeyInfo *curArrayKey = &so->arrayKeys[i];
 		ScanKey		skey = &so->arrayKeyData[curArrayKey->scan_key];
 		int			cur_elem = curArrayKey->cur_elem;
 		int			num_elems = curArrayKey->num_elems;
@@ -596,40 +596,40 @@ _bt_advance_array_keys(IndexScanDesc scan, ScanDirection dir)
 }
 
 /*
- * _bt_mark_array_keys() -- Handle array keys during btmarkpos
+ * _idbt_mark_array_keys() -- Handle array keys during idbtmarkpos
  *
  * Save the current state of the array keys as the "mark" position.
  */
 void
-_bt_mark_array_keys(IndexScanDesc scan)
+_idbt_mark_array_keys(IndexScanDesc scan)
 {
-	BTScanOpaque so = (BTScanOpaque) scan->opaque;
+	IDBTScanOpaque so = (IDBTScanOpaque) scan->opaque;
 	int			i;
 
 	for (i = 0; i < so->numArrayKeys; i++)
 	{
-		BTArrayKeyInfo *curArrayKey = &so->arrayKeys[i];
+		IDBTArrayKeyInfo *curArrayKey = &so->arrayKeys[i];
 
 		curArrayKey->mark_elem = curArrayKey->cur_elem;
 	}
 }
 
 /*
- * _bt_restore_array_keys() -- Handle array keys during btrestrpos
+ * _idbt_restore_array_keys() -- Handle array keys during idbtrestrpos
  *
  * Restore the array keys to where they were when the mark was set.
  */
 void
-_bt_restore_array_keys(IndexScanDesc scan)
+_idbt_restore_array_keys(IndexScanDesc scan)
 {
-	BTScanOpaque so = (BTScanOpaque) scan->opaque;
+	IDBTScanOpaque so = (IDBTScanOpaque) scan->opaque;
 	bool		changed = false;
 	int			i;
 
 	/* Restore each array key to its position when the mark was set */
 	for (i = 0; i < so->numArrayKeys; i++)
 	{
-		BTArrayKeyInfo *curArrayKey = &so->arrayKeys[i];
+		IDBTArrayKeyInfo *curArrayKey = &so->arrayKeys[i];
 		ScanKey		skey = &so->arrayKeyData[curArrayKey->scan_key];
 		int			mark_elem = curArrayKey->mark_elem;
 
@@ -642,13 +642,13 @@ _bt_restore_array_keys(IndexScanDesc scan)
 	}
 
 	/*
-	 * If we changed any keys, we must redo _bt_preprocess_keys.  That might
+	 * If we changed any keys, we must redo _idbt_preprocess_keys.  That might
 	 * sound like overkill, but in cases with multiple keys per index column
 	 * it seems necessary to do the full set of pushups.
 	 */
 	if (changed)
 	{
-		_bt_preprocess_keys(scan);
+		_idbt_preprocess_keys(scan);
 		/* The mark should have been set on a consistent set of keys... */
 		Assert(so->qual_ok);
 	}
@@ -656,7 +656,7 @@ _bt_restore_array_keys(IndexScanDesc scan)
 
 
 /*
- *	_bt_preprocess_keys() -- Preprocess scan keys
+ *	_idbt_preprocess_keys() -- Preprocess scan keys
  *
  * The given search-type keys (in scan->keyData[] or so->arrayKeyData[])
  * are copied to so->keyData[] with possible transformation.
@@ -681,17 +681,17 @@ _bt_restore_array_keys(IndexScanDesc scan)
  * within each attribute may be done as a byproduct of the processing here,
  * but no other code depends on that.
  *
- * The output keys are marked with flags SK_BT_REQFWD and/or SK_BT_REQBKWD
+ * The output keys are marked with flags SK_IDBT_REQFWD and/or SK_IDBT_REQBKWD
  * if they must be satisfied in order to continue the scan forward or backward
- * respectively.  _bt_checkkeys uses these flags.  For example, if the quals
- * are "x = 1 AND y < 4 AND z < 5", then _bt_checkkeys will reject a tuple
+ * respectively.  _idbt_checkkeys uses these flags.  For example, if the quals
+ * are "x = 1 AND y < 4 AND z < 5", then _idbt_checkkeys will reject a tuple
  * (1,2,7), but we must continue the scan in case there are tuples (1,3,z).
  * But once we reach tuples like (1,4,z) we can stop scanning because no
  * later tuples could match.  This is reflected by marking the x and y keys,
- * but not the z key, with SK_BT_REQFWD.  In general, the keys for leading
- * attributes with "=" keys are marked both SK_BT_REQFWD and SK_BT_REQBKWD.
+ * but not the z key, with SK_IDBT_REQFWD.  In general, the keys for leading
+ * attributes with "=" keys are marked both SK_IDBT_REQFWD and SK_IDBT_REQBKWD.
  * For the first attribute without an "=" key, any "<" and "<=" keys are
- * marked SK_BT_REQFWD while any ">" and ">=" keys are marked SK_BT_REQBKWD.
+ * marked SK_IDBT_REQFWD while any ">" and ">=" keys are marked SK_IDBT_REQBKWD.
  * This can be seen to be correct by considering the above example.  Note
  * in particular that if there are no keys for a given attribute, the keys for
  * subsequent attributes can never be required; for instance "WHERE y = 4"
@@ -712,7 +712,7 @@ _bt_restore_array_keys(IndexScanDesc scan)
  * precisely that we may not be able to eliminate redundant keys.  Suppose
  * we have "x > 4::int AND x > 10::bigint", and we are unable to determine
  * which key is more restrictive for lack of a suitable cross-type operator.
- * _bt_first will arbitrarily pick one of the keys to do the initial
+ * _idbt_first will arbitrarily pick one of the keys to do the initial
  * positioning with.  If it picks x > 4, then the x > 10 condition will fail
  * until we reach index entries > 10; but we can't stop the scan just because
  * x > 10 is failing.  On the other hand, if we are scanning backwards, then
@@ -740,9 +740,9 @@ _bt_restore_array_keys(IndexScanDesc scan)
  * new elements of array keys.	Therefore we can't overwrite the source data.
  */
 void
-_bt_preprocess_keys(IndexScanDesc scan)
+_idbt_preprocess_keys(IndexScanDesc scan)
 {
-	BTScanOpaque so = (BTScanOpaque) scan->opaque;
+	IDBTScanOpaque so = (IDBTScanOpaque) scan->opaque;
 	int			numberOfKeys = scan->numberOfKeys;
 	int16	   *indoption = scan->indexRelation->rd_indoption;
 	int			new_numberOfKeys;
@@ -750,7 +750,7 @@ _bt_preprocess_keys(IndexScanDesc scan)
 	ScanKey		inkeys;
 	ScanKey		outkeys;
 	ScanKey		cur;
-	ScanKey		xform[BTMaxStrategyNumber];
+	ScanKey		xform[IDBTMaxStrategyNumber];
 	bool		test_result;
 	int			i,
 				j;
@@ -781,13 +781,13 @@ _bt_preprocess_keys(IndexScanDesc scan)
 	if (numberOfKeys == 1)
 	{
 		/* Apply indoption to scankey (might change sk_strategy!) */
-		if (!_bt_fix_scankey_strategy(cur, indoption))
+		if (!_idbt_fix_scankey_strategy(cur, indoption))
 			so->qual_ok = false;
 		memcpy(outkeys, cur, sizeof(ScanKeyData));
 		so->numberOfKeys = 1;
 		/* We can mark the qual as required if it's for first index col */
 		if (cur->sk_attno == 1)
-			_bt_mark_scankey_required(outkeys);
+			_idbt_mark_scankey_required(outkeys);
 		return;
 	}
 
@@ -816,7 +816,7 @@ _bt_preprocess_keys(IndexScanDesc scan)
 		if (i < numberOfKeys)
 		{
 			/* Apply indoption to scankey (might change sk_strategy!) */
-			if (!_bt_fix_scankey_strategy(cur, indoption))
+			if (!_idbt_fix_scankey_strategy(cur, indoption))
 			{
 				/* NULL can't be matched, so give up */
 				so->qual_ok = false;
@@ -851,7 +851,7 @@ _bt_preprocess_keys(IndexScanDesc scan)
 			{
 				ScanKey		eq = xform[BTEqualStrategyNumber - 1];
 
-				for (j = BTMaxStrategyNumber; --j >= 0;)
+				for (j = IDBTMaxStrategyNumber; --j >= 0;)
 				{
 					ScanKey		chk = xform[j];
 
@@ -865,7 +865,7 @@ _bt_preprocess_keys(IndexScanDesc scan)
 						return;
 					}
 
-					if (_bt_compare_scankey_args(scan, chk, eq, chk,
+					if (_idbt_compare_scankey_args(scan, chk, eq, chk,
 												 &test_result))
 					{
 						if (!test_result)
@@ -890,7 +890,7 @@ _bt_preprocess_keys(IndexScanDesc scan)
 				ScanKey		lt = xform[BTLessStrategyNumber - 1];
 				ScanKey		le = xform[BTLessEqualStrategyNumber - 1];
 
-				if (_bt_compare_scankey_args(scan, le, lt, le,
+				if (_idbt_compare_scankey_args(scan, le, lt, le,
 											 &test_result))
 				{
 					if (test_result)
@@ -907,7 +907,7 @@ _bt_preprocess_keys(IndexScanDesc scan)
 				ScanKey		gt = xform[BTGreaterStrategyNumber - 1];
 				ScanKey		ge = xform[BTGreaterEqualStrategyNumber - 1];
 
-				if (_bt_compare_scankey_args(scan, ge, gt, ge,
+				if (_idbt_compare_scankey_args(scan, ge, gt, ge,
 											 &test_result))
 				{
 					if (test_result)
@@ -922,7 +922,7 @@ _bt_preprocess_keys(IndexScanDesc scan)
 			 * mark them if they are required.	They are required (possibly
 			 * only in one direction) if all attrs before this one had "=".
 			 */
-			for (j = BTMaxStrategyNumber; --j >= 0;)
+			for (j = IDBTMaxStrategyNumber; --j >= 0;)
 			{
 				if (xform[j])
 				{
@@ -930,7 +930,7 @@ _bt_preprocess_keys(IndexScanDesc scan)
 
 					memcpy(outkey, xform[j], sizeof(ScanKeyData));
 					if (priorNumberOfEqualCols == attno - 1)
-						_bt_mark_scankey_required(outkey);
+						_idbt_mark_scankey_required(outkey);
 				}
 			}
 
@@ -955,7 +955,7 @@ _bt_preprocess_keys(IndexScanDesc scan)
 
 			memcpy(outkey, cur, sizeof(ScanKeyData));
 			if (numberOfEqualCols == attno - 1)
-				_bt_mark_scankey_required(outkey);
+				_idbt_mark_scankey_required(outkey);
 
 			/*
 			 * We don't support RowCompare using equality; such a qual would
@@ -974,7 +974,7 @@ _bt_preprocess_keys(IndexScanDesc scan)
 		else
 		{
 			/* yup, keep only the more restrictive key */
-			if (_bt_compare_scankey_args(scan, cur, cur, xform[j],
+			if (_idbt_compare_scankey_args(scan, cur, cur, xform[j],
 										 &test_result))
 			{
 				if (test_result)
@@ -998,7 +998,7 @@ _bt_preprocess_keys(IndexScanDesc scan)
 
 				memcpy(outkey, cur, sizeof(ScanKeyData));
 				if (numberOfEqualCols == attno - 1)
-					_bt_mark_scankey_required(outkey);
+					_idbt_mark_scankey_required(outkey);
 			}
 		}
 	}
@@ -1030,7 +1030,7 @@ _bt_preprocess_keys(IndexScanDesc scan)
  * "x < 5" regardless of which way the index is sorted.
  */
 static bool
-_bt_compare_scankey_args(IndexScanDesc scan, ScanKey op,
+_idbt_compare_scankey_args(IndexScanDesc scan, ScanKey op,
 						 ScanKey leftarg, ScanKey rightarg,
 						 bool *result)
 {
@@ -1072,8 +1072,8 @@ _bt_compare_scankey_args(IndexScanDesc scan, ScanKey op,
 		 * logic.  If the index is NULLS FIRST, we need to flip the strategy.
 		 */
 		strat = op->sk_strategy;
-		if (op->sk_flags & SK_BT_NULLS_FIRST)
-			strat = BTCommuteStrategyNumber(strat);
+		if (op->sk_flags & SK_IDBT_NULLS_FIRST)
+			strat = IDBTCommuteStrategyNumber(strat);
 
 		switch (strat)
 		{
@@ -1141,12 +1141,12 @@ _bt_compare_scankey_args(IndexScanDesc scan, ScanKey op,
 	 * indexscan initiated by syscache lookup will use cross-data-type
 	 * operators.)
 	 *
-	 * If the sk_strategy was flipped by _bt_fix_scankey_strategy, we have to
+	 * If the sk_strategy was flipped by _idbt_fix_scankey_strategy, we have to
 	 * un-flip it to get the correct opfamily member.
 	 */
 	strat = op->sk_strategy;
-	if (op->sk_flags & SK_BT_DESC)
-		strat = BTCommuteStrategyNumber(strat);
+	if (op->sk_flags & SK_IDBT_DESC)
+		strat = IDBTCommuteStrategyNumber(strat);
 
 	cmp_op = get_opfamily_member(rel->rd_opfamily[leftarg->sk_attno - 1],
 								 lefttype,
@@ -1194,11 +1194,11 @@ _bt_compare_scankey_args(IndexScanDesc scan, ScanKey op,
  * not going to change while the scankey survives.
  */
 static bool
-_bt_fix_scankey_strategy(ScanKey skey, int16 *indoption)
+_idbt_fix_scankey_strategy(ScanKey skey, int16 *indoption)
 {
 	int			addflags;
 
-	addflags = indoption[skey->sk_attno - 1] << SK_BT_INDOPTION_SHIFT;
+	addflags = indoption[skey->sk_attno - 1] << SK_IDBT_INDOPTION_SHIFT;
 
 	/*
 	 * We treat all btree operators as strict (even if they're not so marked
@@ -1237,7 +1237,7 @@ _bt_fix_scankey_strategy(ScanKey skey, int16 *indoption)
 		}
 		else if (skey->sk_flags & SK_SEARCHNOTNULL)
 		{
-			if (skey->sk_flags & SK_BT_NULLS_FIRST)
+			if (skey->sk_flags & SK_IDBT_NULLS_FIRST)
 				skey->sk_strategy = BTGreaterStrategyNumber;
 			else
 				skey->sk_strategy = BTLessStrategyNumber;
@@ -1255,8 +1255,8 @@ _bt_fix_scankey_strategy(ScanKey skey, int16 *indoption)
 	}
 
 	/* Adjust strategy for DESC, if we didn't already */
-	if ((addflags & SK_BT_DESC) && !(skey->sk_flags & SK_BT_DESC))
-		skey->sk_strategy = BTCommuteStrategyNumber(skey->sk_strategy);
+	if ((addflags & SK_IDBT_DESC) && !(skey->sk_flags & SK_IDBT_DESC))
+		skey->sk_strategy = IDBTCommuteStrategyNumber(skey->sk_strategy);
 	skey->sk_flags |= addflags;
 
 	/* If it's a row header, fix row member flags and strategies similarly */
@@ -1267,9 +1267,9 @@ _bt_fix_scankey_strategy(ScanKey skey, int16 *indoption)
 		for (;;)
 		{
 			Assert(subkey->sk_flags & SK_ROW_MEMBER);
-			addflags = indoption[subkey->sk_attno - 1] << SK_BT_INDOPTION_SHIFT;
-			if ((addflags & SK_BT_DESC) && !(subkey->sk_flags & SK_BT_DESC))
-				subkey->sk_strategy = BTCommuteStrategyNumber(subkey->sk_strategy);
+			addflags = indoption[subkey->sk_attno - 1] << SK_IDBT_INDOPTION_SHIFT;
+			if ((addflags & SK_IDBT_DESC) && !(subkey->sk_flags & SK_IDBT_DESC))
+				subkey->sk_strategy = IDBTCommuteStrategyNumber(subkey->sk_strategy);
 			subkey->sk_flags |= addflags;
 			if (subkey->sk_flags & SK_ROW_END)
 				break;
@@ -1299,7 +1299,7 @@ _bt_fix_scankey_strategy(ScanKey skey, int16 *indoption)
  * anyway on a rescan.	Something to keep an eye on though.
  */
 static void
-_bt_mark_scankey_required(ScanKey skey)
+_idbt_mark_scankey_required(ScanKey skey)
 {
 	int			addflags;
 
@@ -1307,14 +1307,14 @@ _bt_mark_scankey_required(ScanKey skey)
 	{
 		case BTLessStrategyNumber:
 		case BTLessEqualStrategyNumber:
-			addflags = SK_BT_REQFWD;
+			addflags = SK_IDBT_REQFWD;
 			break;
 		case BTEqualStrategyNumber:
-			addflags = SK_BT_REQFWD | SK_BT_REQBKWD;
+			addflags = SK_IDBT_REQFWD | SK_IDBT_REQBKWD;
 			break;
 		case BTGreaterEqualStrategyNumber:
 		case BTGreaterStrategyNumber:
-			addflags = SK_BT_REQBKWD;
+			addflags = SK_IDBT_REQBKWD;
 			break;
 		default:
 			elog(ERROR, "unrecognized StrategyNumber: %d",
@@ -1357,7 +1357,7 @@ _bt_mark_scankey_required(ScanKey skey)
  *
  * If the tuple fails to pass the qual, we also determine whether there's
  * any need to continue the scan beyond this tuple, and set *continuescan
- * accordingly.  See comments for _bt_preprocess_keys(), above, about how
+ * accordingly.  See comments for _idbt_preprocess_keys(), above, about how
  * this is done.
  *
  * scan: index scan descriptor (containing a search-type scankey)
@@ -1369,7 +1369,7 @@ _bt_mark_scankey_required(ScanKey skey)
  * Caller must hold pin and lock on the index page.
  */
 IndexTuple
-_bt_checkkeys(IndexScanDesc scan,
+_idbt_checkkeys(IndexScanDesc scan,
 			  Page page, OffsetNumber offnum,
 			  ScanDirection dir, bool *continuescan)
 {
@@ -1377,7 +1377,7 @@ _bt_checkkeys(IndexScanDesc scan,
 	bool		tuple_alive;
 	IndexTuple	tuple;
 	TupleDesc	tupdesc;
-	BTScanOpaque so;
+	IDBTScanOpaque so;
 	int			keysz;
 	int			ikey;
 	ScanKey		key;
@@ -1402,9 +1402,9 @@ _bt_checkkeys(IndexScanDesc scan,
 		}
 		else
 		{
-			BTPageOpaque opaque = (BTPageOpaque) PageGetSpecialPointer(page);
+			IDBTPageOpaque opaque = (IDBTPageOpaque) PageGetSpecialPointer(page);
 
-			if (offnum > P_FIRSTDATAKEY(opaque))
+			if (offnum > IDP_FIRSTDATAKEY(opaque))
 				return NULL;
 		}
 
@@ -1420,7 +1420,7 @@ _bt_checkkeys(IndexScanDesc scan,
 	tuple = (IndexTuple) PageGetItem(page, iid);
 
 	tupdesc = RelationGetDescr(scan->indexRelation);
-	so = (BTScanOpaque) scan->opaque;
+	so = (IDBTScanOpaque) scan->opaque;
 	keysz = so->numberOfKeys;
 
 	for (key = so->keyData, ikey = 0; ikey < keysz; key++, ikey++)
@@ -1432,7 +1432,7 @@ _bt_checkkeys(IndexScanDesc scan,
 		/* row-comparison keys need special processing */
 		if (key->sk_flags & SK_ROW_HEADER)
 		{
-			if (_bt_check_rowcompare(key, tuple, tupdesc, dir, continuescan))
+			if (_idbt_check_rowcompare(key, tuple, tupdesc, dir, continuescan))
 				continue;
 			return NULL;
 		}
@@ -1462,10 +1462,10 @@ _bt_checkkeys(IndexScanDesc scan,
 			 * scan direction, then we can conclude no further tuples will
 			 * pass, either.
 			 */
-			if ((key->sk_flags & SK_BT_REQFWD) &&
+			if ((key->sk_flags & SK_IDBT_REQFWD) &&
 				ScanDirectionIsForward(dir))
 				*continuescan = false;
-			else if ((key->sk_flags & SK_BT_REQBKWD) &&
+			else if ((key->sk_flags & SK_IDBT_REQBKWD) &&
 					 ScanDirectionIsBackward(dir))
 				*continuescan = false;
 
@@ -1477,7 +1477,7 @@ _bt_checkkeys(IndexScanDesc scan,
 
 		if (isNull)
 		{
-			if (key->sk_flags & SK_BT_NULLS_FIRST)
+			if (key->sk_flags & SK_IDBT_NULLS_FIRST)
 			{
 				/*
 				 * Since NULLs are sorted before non-NULLs, we know we have
@@ -1489,7 +1489,7 @@ _bt_checkkeys(IndexScanDesc scan,
 				 * a forward scan, however, we must keep going, because we may
 				 * have initially positioned to the start of the index.
 				 */
-				if ((key->sk_flags & (SK_BT_REQFWD | SK_BT_REQBKWD)) &&
+				if ((key->sk_flags & (SK_IDBT_REQFWD | SK_IDBT_REQBKWD)) &&
 					ScanDirectionIsBackward(dir))
 					*continuescan = false;
 			}
@@ -1505,7 +1505,7 @@ _bt_checkkeys(IndexScanDesc scan,
 				 * a backward scan, however, we must keep going, because we
 				 * may have initially positioned to the end of the index.
 				 */
-				if ((key->sk_flags & (SK_BT_REQFWD | SK_BT_REQBKWD)) &&
+				if ((key->sk_flags & (SK_IDBT_REQFWD | SK_IDBT_REQBKWD)) &&
 					ScanDirectionIsForward(dir))
 					*continuescan = false;
 			}
@@ -1528,13 +1528,13 @@ _bt_checkkeys(IndexScanDesc scan,
 			 *
 			 * Note: because we stop the scan as soon as any required equality
 			 * qual fails, it is critical that equality quals be used for the
-			 * initial positioning in _bt_first() when they are available. See
-			 * comments in _bt_first().
+			 * initial positioning in _idbt_first() when they are available. See
+			 * comments in _idbt_first().
 			 */
-			if ((key->sk_flags & SK_BT_REQFWD) &&
+			if ((key->sk_flags & SK_IDBT_REQFWD) &&
 				ScanDirectionIsForward(dir))
 				*continuescan = false;
-			else if ((key->sk_flags & SK_BT_REQBKWD) &&
+			else if ((key->sk_flags & SK_IDBT_REQBKWD) &&
 					 ScanDirectionIsBackward(dir))
 				*continuescan = false;
 
@@ -1560,10 +1560,10 @@ _bt_checkkeys(IndexScanDesc scan,
  * it's not possible for any future tuples in the current scan direction
  * to pass the qual.
  *
- * This is a subroutine for _bt_checkkeys, which see for more info.
+ * This is a subroutine for _idbt_checkkeys, which see for more info.
  */
 static bool
-_bt_check_rowcompare(ScanKey skey, IndexTuple tuple, TupleDesc tupdesc,
+_idbt_check_rowcompare(ScanKey skey, IndexTuple tuple, TupleDesc tupdesc,
 					 ScanDirection dir, bool *continuescan)
 {
 	ScanKey		subkey = (ScanKey) DatumGetPointer(skey->sk_argument);
@@ -1588,7 +1588,7 @@ _bt_check_rowcompare(ScanKey skey, IndexTuple tuple, TupleDesc tupdesc,
 
 		if (isNull)
 		{
-			if (subkey->sk_flags & SK_BT_NULLS_FIRST)
+			if (subkey->sk_flags & SK_IDBT_NULLS_FIRST)
 			{
 				/*
 				 * Since NULLs are sorted before non-NULLs, we know we have
@@ -1600,7 +1600,7 @@ _bt_check_rowcompare(ScanKey skey, IndexTuple tuple, TupleDesc tupdesc,
 				 * a forward scan, however, we must keep going, because we may
 				 * have initially positioned to the start of the index.
 				 */
-				if ((subkey->sk_flags & (SK_BT_REQFWD | SK_BT_REQBKWD)) &&
+				if ((subkey->sk_flags & (SK_IDBT_REQFWD | SK_IDBT_REQBKWD)) &&
 					ScanDirectionIsBackward(dir))
 					*continuescan = false;
 			}
@@ -1616,7 +1616,7 @@ _bt_check_rowcompare(ScanKey skey, IndexTuple tuple, TupleDesc tupdesc,
 				 * a backward scan, however, we must keep going, because we
 				 * may have initially positioned to the end of the index.
 				 */
-				if ((subkey->sk_flags & (SK_BT_REQFWD | SK_BT_REQBKWD)) &&
+				if ((subkey->sk_flags & (SK_IDBT_REQFWD | SK_IDBT_REQBKWD)) &&
 					ScanDirectionIsForward(dir))
 					*continuescan = false;
 			}
@@ -1637,10 +1637,10 @@ _bt_check_rowcompare(ScanKey skey, IndexTuple tuple, TupleDesc tupdesc,
 			 */
 			if (subkey != (ScanKey) DatumGetPointer(skey->sk_argument))
 				subkey--;
-			if ((subkey->sk_flags & SK_BT_REQFWD) &&
+			if ((subkey->sk_flags & SK_IDBT_REQFWD) &&
 				ScanDirectionIsForward(dir))
 				*continuescan = false;
-			else if ((subkey->sk_flags & SK_BT_REQBKWD) &&
+			else if ((subkey->sk_flags & SK_IDBT_REQBKWD) &&
 					 ScanDirectionIsBackward(dir))
 				*continuescan = false;
 			return false;
@@ -1652,7 +1652,7 @@ _bt_check_rowcompare(ScanKey skey, IndexTuple tuple, TupleDesc tupdesc,
 													datum,
 													subkey->sk_argument));
 
-		if (subkey->sk_flags & SK_BT_DESC)
+		if (subkey->sk_flags & SK_IDBT_DESC)
 			cmpresult = -cmpresult;
 
 		/* Done comparing if unequal, else advance to next column */
@@ -1699,10 +1699,10 @@ _bt_check_rowcompare(ScanKey skey, IndexTuple tuple, TupleDesc tupdesc,
 		 * either.	Note we have to look at the deciding column, not
 		 * necessarily the first or last column of the row condition.
 		 */
-		if ((subkey->sk_flags & SK_BT_REQFWD) &&
+		if ((subkey->sk_flags & SK_IDBT_REQFWD) &&
 			ScanDirectionIsForward(dir))
 			*continuescan = false;
-		else if ((subkey->sk_flags & SK_BT_REQBKWD) &&
+		else if ((subkey->sk_flags & SK_IDBT_REQBKWD) &&
 				 ScanDirectionIsBackward(dir))
 			*continuescan = false;
 	}
@@ -1711,7 +1711,7 @@ _bt_check_rowcompare(ScanKey skey, IndexTuple tuple, TupleDesc tupdesc,
 }
 
 /*
- * _bt_killitems - set LP_DEAD state for items an indexscan caller has
+ * _idbt_killitems - set LP_DEAD state for items an indexscan caller has
  * told us were killed
  *
  * scan->so contains information about the current page and killed tuples
@@ -1734,11 +1734,11 @@ _bt_check_rowcompare(ScanKey skey, IndexTuple tuple, TupleDesc tupdesc,
  * recycled.)
  */
 void
-_bt_killitems(IndexScanDesc scan, bool haveLock)
+_idbt_killitems(IndexScanDesc scan, bool haveLock)
 {
-	BTScanOpaque so = (BTScanOpaque) scan->opaque;
+	IDBTScanOpaque so = (IDBTScanOpaque) scan->opaque;
 	Page		page;
-	BTPageOpaque opaque;
+	IDBTPageOpaque opaque;
 	OffsetNumber minoff;
 	OffsetNumber maxoff;
 	int			i;
@@ -1747,17 +1747,17 @@ _bt_killitems(IndexScanDesc scan, bool haveLock)
 	Assert(BufferIsValid(so->currPos.buf));
 
 	if (!haveLock)
-		LockBuffer(so->currPos.buf, BT_READ);
+		LockBuffer(so->currPos.buf, IDBT_READ);
 
 	page = BufferGetPage(so->currPos.buf);
-	opaque = (BTPageOpaque) PageGetSpecialPointer(page);
-	minoff = P_FIRSTDATAKEY(opaque);
+	opaque = (IDBTPageOpaque) PageGetSpecialPointer(page);
+	minoff = IDP_FIRSTDATAKEY(opaque);
 	maxoff = PageGetMaxOffsetNumber(page);
 
 	for (i = 0; i < so->numKilled; i++)
 	{
 		int			itemIndex = so->killedItems[i];
-		BTScanPosItem *kitem = &so->currPos.items[itemIndex];
+		IDBTScanPosItem *kitem = &so->currPos.items[itemIndex];
 		OffsetNumber offnum = kitem->indexOffset;
 
 		Assert(itemIndex >= so->currPos.firstItem &&
@@ -1784,11 +1784,11 @@ _bt_killitems(IndexScanDesc scan, bool haveLock)
 	 * Since this can be redone later if needed, mark as dirty hint.
 	 *
 	 * Whenever we mark anything LP_DEAD, we also set the page's
-	 * BTP_HAS_GARBAGE flag, which is likewise just a hint.
+	 * IDBTP_HAS_GARBAGE flag, which is likewise just a hint.
 	 */
 	if (killedsomething)
 	{
-		opaque->btpo_flags |= BTP_HAS_GARBAGE;
+		opaque->btpo_flags |= IDBTP_HAS_GARBAGE;
 		MarkBufferDirtyHint(so->currPos.buf, true);
 	}
 
@@ -1818,25 +1818,25 @@ _bt_killitems(IndexScanDesc scan, bool haveLock)
  * the lock is ever held, the concurrency hit should be minimal.
  */
 
-typedef struct BTOneVacInfo
+typedef struct IDBTOneVacInfo
 {
 	LockRelId	relid;			/* global identifier of an index */
-	BTCycleId	cycleid;		/* cycle ID for its active VACUUM */
-} BTOneVacInfo;
+	IDBTCycleId	cycleid;		/* cycle ID for its active VACUUM */
+} IDBTOneVacInfo;
 
-typedef struct BTVacInfo
+typedef struct IDBTVacInfo
 {
-	BTCycleId	cycle_ctr;		/* cycle ID most recently assigned */
+	IDBTCycleId	cycle_ctr;		/* cycle ID most recently assigned */
 	int			num_vacuums;	/* number of currently active VACUUMs */
 	int			max_vacuums;	/* allocated length of vacuums[] array */
-	BTOneVacInfo vacuums[1];	/* VARIABLE LENGTH ARRAY */
-} BTVacInfo;
+	IDBTOneVacInfo vacuums[1];	/* VARIABLE LENGTH ARRAY */
+} IDBTVacInfo;
 
-static BTVacInfo *btvacinfo;
+static IDBTVacInfo *btvacinfo;
 
 
 /*
- * _bt_vacuum_cycleid --- get the active vacuum cycle ID for an index,
+ * _idbt_vacuum_cycleid --- get the active vacuum cycle ID for an index,
  *		or zero if there is no active VACUUM
  *
  * Note: for correct interlocking, the caller must already hold pin and
@@ -1844,10 +1844,10 @@ static BTVacInfo *btvacinfo;
  * ensures that even if a VACUUM starts immediately afterwards, it cannot
  * process those pages until the page split is complete.
  */
-BTCycleId
-_bt_vacuum_cycleid(Relation rel)
+IDBTCycleId
+_idbt_vacuum_cycleid(Relation rel)
 {
-	BTCycleId	result = 0;
+	IDBTCycleId	result = 0;
 	int			i;
 
 	/* Share lock is enough since this is a read-only operation */
@@ -1855,7 +1855,7 @@ _bt_vacuum_cycleid(Relation rel)
 
 	for (i = 0; i < btvacinfo->num_vacuums; i++)
 	{
-		BTOneVacInfo *vac = &btvacinfo->vacuums[i];
+		IDBTOneVacInfo *vac = &btvacinfo->vacuums[i];
 
 		if (vac->relid.relId == rel->rd_lockInfo.lockRelId.relId &&
 			vac->relid.dbId == rel->rd_lockInfo.lockRelId.dbId)
@@ -1870,20 +1870,20 @@ _bt_vacuum_cycleid(Relation rel)
 }
 
 /*
- * _bt_start_vacuum --- assign a cycle ID to a just-starting VACUUM operation
+ * _idbt_start_vacuum --- assign a cycle ID to a just-starting VACUUM operation
  *
  * Note: the caller must guarantee that it will eventually call
- * _bt_end_vacuum, else we'll permanently leak an array slot.  To ensure
+ * _idbt_end_vacuum, else we'll permanently leak an array slot.  To ensure
  * that this happens even in elog(FATAL) scenarios, the appropriate coding
  * is not just a PG_TRY, but
- *		PG_ENSURE_ERROR_CLEANUP(_bt_end_vacuum_callback, PointerGetDatum(rel))
+ *		PG_ENSURE_ERROR_CLEANUP(_idbt_end_vacuum_callback, PointerGetDatum(rel))
  */
-BTCycleId
-_bt_start_vacuum(Relation rel)
+IDBTCycleId
+_idbt_start_vacuum(Relation rel)
 {
-	BTCycleId	result;
+	IDBTCycleId	result;
 	int			i;
-	BTOneVacInfo *vac;
+	IDBTOneVacInfo *vac;
 
 	LWLockAcquire(BtreeVacuumLock, LW_EXCLUSIVE);
 
@@ -1892,7 +1892,7 @@ _bt_start_vacuum(Relation rel)
 	 * reserved high values.
 	 */
 	result = ++(btvacinfo->cycle_ctr);
-	if (result == 0 || result > MAX_BT_CYCLE_ID)
+	if (result == 0 || result > MAX_IDBT_CYCLE_ID)
 		result = btvacinfo->cycle_ctr = 1;
 
 	/* Let's just make sure there's no entry already for this index */
@@ -1905,7 +1905,7 @@ _bt_start_vacuum(Relation rel)
 			/*
 			 * Unlike most places in the backend, we have to explicitly
 			 * release our LWLock before throwing an error.  This is because
-			 * we expect _bt_end_vacuum() to be called before transaction
+			 * we expect _idbt_end_vacuum() to be called before transaction
 			 * abort cleanup can run to release LWLocks.
 			 */
 			LWLockRelease(BtreeVacuumLock);
@@ -1930,13 +1930,13 @@ _bt_start_vacuum(Relation rel)
 }
 
 /*
- * _bt_end_vacuum --- mark a btree VACUUM operation as done
+ * _idbt_end_vacuum --- mark a btree VACUUM operation as done
  *
  * Note: this is deliberately coded not to complain if no entry is found;
  * this allows the caller to put PG_TRY around the start_vacuum operation.
  */
 void
-_bt_end_vacuum(Relation rel)
+_idbt_end_vacuum(Relation rel)
 {
 	int			i;
 
@@ -1945,7 +1945,7 @@ _bt_end_vacuum(Relation rel)
 	/* Find the array entry */
 	for (i = 0; i < btvacinfo->num_vacuums; i++)
 	{
-		BTOneVacInfo *vac = &btvacinfo->vacuums[i];
+		IDBTOneVacInfo *vac = &btvacinfo->vacuums[i];
 
 		if (vac->relid.relId == rel->rd_lockInfo.lockRelId.relId &&
 			vac->relid.dbId == rel->rd_lockInfo.lockRelId.dbId)
@@ -1961,37 +1961,37 @@ _bt_end_vacuum(Relation rel)
 }
 
 /*
- * _bt_end_vacuum wrapped as an on_shmem_exit callback function
+ * _idbt_end_vacuum wrapped as an on_shmem_exit callback function
  */
 void
-_bt_end_vacuum_callback(int code, Datum arg)
+_idbt_end_vacuum_callback(int code, Datum arg)
 {
-	_bt_end_vacuum((Relation) DatumGetPointer(arg));
+	_idbt_end_vacuum((Relation) DatumGetPointer(arg));
 }
 
 /*
- * BTreeShmemSize --- report amount of shared memory space needed
+ * IDBTreeShmemSize --- report amount of shared memory space needed
  */
 Size
-BTreeShmemSize(void)
+IDBTreeShmemSize(void)
 {
 	Size		size;
 
-	size = offsetof(BTVacInfo, vacuums[0]);
-	size = add_size(size, mul_size(MaxBackends, sizeof(BTOneVacInfo)));
+	size = offsetof(IDBTVacInfo, vacuums[0]);
+	size = add_size(size, mul_size(MaxBackends, sizeof(IDBTOneVacInfo)));
 	return size;
 }
 
 /*
- * BTreeShmemInit --- initialize this module's shared memory
+ * IDBTreeShmemInit --- initialize this module's shared memory
  */
 void
-BTreeShmemInit(void)
+IDBTreeShmemInit(void)
 {
 	bool		found;
 
-	btvacinfo = (BTVacInfo *) ShmemInitStruct("BTree Vacuum State",
-											  BTreeShmemSize(),
+	btvacinfo = (IDBTVacInfo *) ShmemInitStruct("BTree Vacuum State",
+											  IDBTreeShmemSize(),
 											  &found);
 
 	if (!IsUnderPostmaster)
@@ -2004,7 +2004,7 @@ BTreeShmemInit(void)
 		 * having it always start the same doesn't seem good.  Seed with
 		 * low-order bits of time() instead.
 		 */
-		btvacinfo->cycle_ctr = (BTCycleId) time(NULL);
+		btvacinfo->cycle_ctr = (IDBTCycleId) time(NULL);
 
 		btvacinfo->num_vacuums = 0;
 		btvacinfo->max_vacuums = MaxBackends;
@@ -2014,7 +2014,7 @@ BTreeShmemInit(void)
 }
 
 Datum
-btoptions(PG_FUNCTION_ARGS)
+idbtoptions(PG_FUNCTION_ARGS)
 {
 	Datum		reloptions = PG_GETARG_DATUM(0);
 	bool		validate = PG_GETARG_BOOL(1);

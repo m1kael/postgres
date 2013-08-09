@@ -40,6 +40,21 @@ typedef uint16 StrategyNumber;
 #define BTMaxStrategyNumber				5
 
 
+// COPY OF IT FOR IDIST
+/*
+ * We define the strategy numbers for B-tree indexes here, to avoid having
+ * to import access/nbtree.h into a lot of places that shouldn't need it.
+ */
+#define IDBTLessStrategyNumber			1
+#define IDBTLessEqualStrategyNumber		2
+#define IDBTEqualStrategyNumber			3
+#define IDBTGreaterEqualStrategyNumber	4
+#define IDBTGreaterStrategyNumber		5
+
+#define IDBTMaxStrategyNumber			5
+
+
+
 /*
  * A ScanKey represents the application of a comparison operator between
  * a table or index column and a constant.	When it's part of an array of

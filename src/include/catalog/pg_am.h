@@ -132,5 +132,12 @@ DESCR("GIN index access method");
 DATA(insert OID = 4000 (  spgist	0 5 f f f f f t f t f f f 0 spginsert spgbeginscan spggettuple spggetbitmap spgrescan spgendscan spgmarkpos spgrestrpos spgbuild spgbuildempty spgbulkdelete spgvacuumcleanup spgcanreturn spgcostestimate spgoptions ));
 DESCR("SP-GiST index access method");
 #define SPGIST_AM_OID 4000
+/*******************************************************/
+
+DATA(insert OID = 4040 (  idist		5 2 t f t t t t t t f t t 0 idbtinsert idbtbeginscan idbtgettuple idbtgetbitmap idbtrescan idbtendscan idbtmarkpos idbtrestrpos idbtbuild idbtbuildempty idbtbulkdelete idbtvacuumcleanup idbtcanreturn idbtcostestimate idbtoptions ));
+DESCR("idist index access method");
+#define IDIST_AM_OID 4040
+ 
+/*******************************************************/
 
 #endif   /* PG_AM_H */

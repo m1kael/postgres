@@ -228,4 +228,66 @@ DATA(insert (	4000	quad_point_ops		PGNSP PGUID 4015  600 t 0 ));
 DATA(insert (	4000	kd_point_ops		PGNSP PGUID 4016  600 f 0 ));
 DATA(insert (	4000	text_ops			PGNSP PGUID 4017  25 t 0 ));
 
+
+
+
+//~ /************************************************************/
+
+DATA(insert (	4040 	abstime_ops			PGNSP PGUID  421  702 t 0 ));
+DATA(insert (	4040 	array_ops			PGNSP PGUID  397 2277 t 0 ));
+DATA(insert (	4040 	bit_ops				PGNSP PGUID  423 1560 t 0 ));
+DATA(insert (	4040 	bool_ops			PGNSP PGUID  424   16 t 0 ));
+DATA(insert (	4040 	bpchar_ops			PGNSP PGUID  426 1042 t 0 ));
+DATA(insert (	4040 	bytea_ops			PGNSP PGUID  428   17 t 0 ));
+DATA(insert (	4040 	char_ops			PGNSP PGUID  429   18 t 0 ));
+DATA(insert (	4040 	cidr_ops			PGNSP PGUID 1974  869 f 0 ));
+DATA(insert OID = 4101 ( 4040 date_ops	PGNSP PGUID  434 1082 t 0 ));
+#define DATE_IDIST_OPS_OID 4101
+DATA(insert (	4040 	float4_ops			PGNSP PGUID 1970  700 t 0 ));
+DATA(insert OID = 4102 ( 4040 float8_ops	PGNSP PGUID 1970  701 t 0 ));
+#define FLOAT8_IDIST_OPS_OID 4102
+DATA(insert (	4040 	inet_ops			PGNSP PGUID 1974  869 t 0 ));
+DATA(insert OID = 4103 ( 4040 int2_ops	PGNSP PGUID 1976   21 t 0 ));
+#define INT2_IDIST_OPS_OID 4103
+DATA(insert OID = 4104 ( 4040 int4_ops	PGNSP PGUID 1976   23 t 0 ));
+#define INT4_IDIST_OPS_OID 4104
+DATA(insert OID = 4105 ( 4040 int8_ops	PGNSP PGUID 1976   20 t 0 ));
+#define INT8_IDIST_OPS_OID 4105
+DATA(insert (	4040 	interval_ops		PGNSP PGUID 1982 1186 t 0 ));
+DATA(insert (	4040 	macaddr_ops			PGNSP PGUID 1984  829 t 0 ));
+
+DATA(insert (	4040 	name_ops			PGNSP PGUID 1986   19 t 2275 ));
+DATA(insert OID = 4106 ( 4040 numeric_ops PGNSP PGUID 1988 1700 t 0 ));
+#define NUMERIC_IDIST_OPS_OID 4106
+DATA(insert OID = 4107 ( 4040 oid_ops		PGNSP PGUID 1989   26 t 0 ));
+#define OID_IDIST_OPS_OID 4107
+DATA(insert (	4040 	oidvector_ops		PGNSP PGUID 1991   30 t 0 ));
+DATA(insert (	4040 	record_ops			PGNSP PGUID 2994 2249 t 0 ));
+DATA(insert OID = 4108 ( 4040 text_ops	PGNSP PGUID 1994   25 t 0 ));
+#define TEXT_IDIST_OPS_OID 4108
+DATA(insert (	4040 	time_ops			PGNSP PGUID 1996 1083 t 0 ));
+DATA(insert OID = 4109 ( 4040 timestamptz_ops PGNSP PGUID  434 1184 t 0 ));
+#define TIMESTAMPTZ_IDIST_OPS_OID 4109
+DATA(insert (	4040 	timetz_ops			PGNSP PGUID 2000 1266 t 0 ));
+DATA(insert (	4040 	varbit_ops			PGNSP PGUID 2002 1562 t 0 ));
+DATA(insert (	4040 	varchar_ops			PGNSP PGUID 1994   25 f 0 ));
+DATA(insert OID = 4110 ( 4040 timestamp_ops	PGNSP PGUID  434 1114 t 0 ));
+#define TIMESTAMP_IDIST_OPS_OID 4110
+DATA(insert (	4040 	text_pattern_ops	PGNSP PGUID 2095   25 f 0 ));
+DATA(insert (	4040 	varchar_pattern_ops PGNSP PGUID 2095   25 f 0 ));
+DATA(insert (	4040 	bpchar_pattern_ops	PGNSP PGUID 2097 1042 f 0 ));
+DATA(insert (	4040 	money_ops			PGNSP PGUID 2099  790 t 0 ));
+DATA(insert (	4040 	tid_ops				PGNSP PGUID 2789   27 t 0 ));
+DATA(insert (	4040 	reltime_ops			PGNSP PGUID 2233  703 t 0 ));
+DATA(insert (	4040 	tinterval_ops		PGNSP PGUID 2234  704 t 0 ));
+DATA(insert (	4040 	uuid_ops			PGNSP PGUID 2968  2950 t 0 ));
+DATA(insert (	4040 	enum_ops			PGNSP PGUID 3522  3500 t 0 ));
+DATA(insert (	4040 	tsvector_ops		PGNSP PGUID 3626  3614 t 0 ));
+DATA(insert (	4040 	tsquery_ops			PGNSP PGUID 3683  3615 t 0 ));
+DATA(insert (	4040 	range_ops			PGNSP PGUID 3901  3831 t 0 ));
+
+/************************************************************/
+
+
+
 #endif   /* PG_OPCLASS_H */

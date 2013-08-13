@@ -4729,6 +4729,119 @@ DESCR("SP-GiST support for quad tree over range");
 /* event triggers */
 DATA(insert OID = 3566 (  pg_event_trigger_dropped_objects		PGNSP PGUID 12 10 100 0 0 f f f f t t s 0 0 2249 "" "{26,26,23,25,25,25,25}" "{o,o,o,o,o,o,o}" "{classid, objid, objsubid, object_type, schema_name, object_name, object_identity}" _null_ pg_event_trigger_dropped_objects _null_ _null_ _null_ ));
 DESCR("list objects dropped by the current command");
+
+
+
+/*****************************************************************/
+
+DATA(insert OID = 4160 (  idbtgettuple		   PGNSP PGUID 12 1 0 0 0 f f f f t f v 2 0 16 "2281 2281" _null_ _null_ _null_ _null_	idbtgettuple _null_ _null_ _null_ ));
+DESCR("idbtree(internal)");
+DATA(insert OID = 4161 (  idbtgetbitmap	   PGNSP PGUID 12 1 0 0 0 f f f f t f v 2 0 20 "2281 2281" _null_ _null_ _null_ _null_	idbtgetbitmap _null_ _null_ _null_ ));
+DESCR("idbtree(internal)");
+DATA(insert OID = 4162 (  idbtinsert		   PGNSP PGUID 12 1 0 0 0 f f f f t f v 6 0 16 "2281 2281 2281 2281 2281 2281" _null_ _null_ _null_ _null_	idbtinsert _null_ _null_ _null_ ));
+DESCR("idbtree(internal)");
+DATA(insert OID = 4163 (  idbtbeginscan	   PGNSP PGUID 12 1 0 0 0 f f f f t f v 3 0 2281 "2281 2281 2281" _null_ _null_ _null_ _null_	idbtbeginscan _null_ _null_ _null_ ));
+DESCR("idbtree(internal)");
+DATA(insert OID = 4164 (  idbtrescan		   PGNSP PGUID 12 1 0 0 0 f f f f t f v 5 0 2278 "2281 2281 2281 2281 2281" _null_ _null_ _null_ _null_ idbtrescan _null_ _null_ _null_ ));
+DESCR("idbtree(internal)");
+DATA(insert OID = 4165 (  idbtendscan		   PGNSP PGUID 12 1 0 0 0 f f f f t f v 1 0 2278 "2281" _null_ _null_ _null_ _null_ idbtendscan _null_ _null_ _null_ ));
+DESCR("idbtree(internal)");
+DATA(insert OID = 4166 (  idbtmarkpos		   PGNSP PGUID 12 1 0 0 0 f f f f t f v 1 0 2278 "2281" _null_ _null_ _null_ _null_ idbtmarkpos _null_ _null_ _null_ ));
+DESCR("idbtree(internal)");
+DATA(insert OID = 4167 (  idbtrestrpos		   PGNSP PGUID 12 1 0 0 0 f f f f t f v 1 0 2278 "2281" _null_ _null_ _null_ _null_ idbtrestrpos _null_ _null_ _null_ ));
+DESCR("idbtree(internal)");
+DATA(insert OID = 4168 (  idbtbuild		   PGNSP PGUID 12 1 0 0 0 f f f f t f v 3 0 2281 "2281 2281 2281" _null_ _null_ _null_ _null_ idbtbuild _null_ _null_ _null_ ));
+DESCR("idbtree(internal)");
+DATA(insert OID = 4169 (  idbtbuildempty	   PGNSP PGUID 12 1 0 0 0 f f f f t f v 1 0 2278 "2281" _null_ _null_ _null_ _null_ idbtbuildempty _null_ _null_ _null_ ));
+DESCR("idbtree(internal)");
+DATA(insert OID = 4170 (  idbtbulkdelete	   PGNSP PGUID 12 1 0 0 0 f f f f t f v 4 0 2281 "2281 2281 2281 2281" _null_ _null_ _null_ _null_ idbtbulkdelete _null_ _null_ _null_ ));
+DESCR("idbtree(internal)");
+DATA(insert OID = 4171 (  idbtvacuumcleanup   PGNSP PGUID 12 1 0 0 0 f f f f t f v 2 0 2281 "2281 2281" _null_ _null_ _null_ _null_ idbtvacuumcleanup _null_ _null_ _null_ ));
+DESCR("idbtree(internal)");
+DATA(insert OID = 4172 (  idbtcanreturn	   PGNSP PGUID 12 1 0 0 0 f f f f t f s 1 0 16 "2281" _null_ _null_ _null_ _null_ idbtcanreturn _null_ _null_ _null_ ));
+DESCR("idbtree(internal)");
+DATA(insert OID = 4173 (  idbtcostestimate   PGNSP PGUID 12 1 0 0 0 f f f f t f v 7 0 2278 "2281 2281 2281 2281 2281 2281 2281" _null_ _null_ _null_ _null_ idbtcostestimate _null_ _null_ _null_ ));
+DESCR("idbtree(internal)");
+DATA(insert OID = 4174 (  idbtoptions		   PGNSP PGUID 12 1 0 0 0 f f f f t f s 2 0 17 "1009 16" _null_ _null_ _null_ _null_  idbtoptions _null_ _null_ _null_ ));
+DESCR("idbtree(internal)");
+
+
+
+
+DATA(insert OID = 4175 (  idbtint2cmp		   PGNSP PGUID 12 1 0 0 0 f f f f t f i 2 0 23 "21 21" _null_ _null_ _null_ _null_ idbtint2cmp _null_ _null_ _null_ ));
+DESCR("less-equal-greater");
+DATA(insert OID = 4176 ( idbtint2sortsupport PGNSP PGUID 12 1 0 0 0 f f f f t f i 1 0 2278 "2281" _null_ _null_ _null_ _null_ idbtint2sortsupport _null_ _null_ _null_ ));
+DESCR("sort support");
+DATA(insert OID = 4177 (  idbtint4cmp		   PGNSP PGUID 12 1 0 0 0 f f f f t f i 2 0 23 "23 23" _null_ _null_ _null_ _null_ idbtint4cmp _null_ _null_ _null_ ));
+DESCR("less-equal-greater");
+DATA(insert OID = 4178 ( idbtint4sortsupport PGNSP PGUID 12 1 0 0 0 f f f f t f i 1 0 2278 "2281" _null_ _null_ _null_ _null_ idbtint4sortsupport _null_ _null_ _null_ ));
+DESCR("sort support");
+DATA(insert OID = 4179 (  idbtint8cmp		   PGNSP PGUID 12 1 0 0 0 f f f f t f i 2 0 23 "20 20" _null_ _null_ _null_ _null_ idbtint8cmp _null_ _null_ _null_ ));
+DESCR("less-equal-greater");
+DATA(insert OID = 4180 ( idbtint8sortsupport PGNSP PGUID 12 1 0 0 0 f f f f t f i 1 0 2278 "2281" _null_ _null_ _null_ _null_ idbtint8sortsupport _null_ _null_ _null_ ));
+DESCR("sort support");
+DATA(insert OID = 4181 (  idbtfloat4cmp	   PGNSP PGUID 12 1 0 0 0 f f f f t f i 2 0 23 "700 700" _null_ _null_ _null_ _null_ idbtfloat4cmp _null_ _null_ _null_ ));
+DESCR("less-equal-greater");
+DATA(insert OID = 4182 ( idbtfloat4sortsupport PGNSP PGUID 12 1 0 0 0 f f f f t f i 1 0 2278 "2281" _null_ _null_ _null_ _null_ idbtfloat4sortsupport _null_ _null_ _null_ ));
+DESCR("sort support");
+DATA(insert OID = 4183 (  idbtfloat8cmp	   PGNSP PGUID 12 1 0 0 0 f f f f t f i 2 0 23 "701 701" _null_ _null_ _null_ _null_ idbtfloat8cmp _null_ _null_ _null_ ));
+DESCR("less-equal-greater");
+DATA(insert OID = 4184 ( idbtfloat8sortsupport PGNSP PGUID 12 1 0 0 0 f f f f t f i 1 0 2278 "2281" _null_ _null_ _null_ _null_ idbtfloat8sortsupport _null_ _null_ _null_ ));
+DESCR("sort support");
+DATA(insert OID = 4185 (  idbtoidcmp		   PGNSP PGUID 12 1 0 0 0 f f f f t f i 2 0 23 "26 26" _null_ _null_ _null_ _null_ idbtoidcmp _null_ _null_ _null_ ));
+DESCR("less-equal-greater");
+DATA(insert OID = 4186 ( idbtoidsortsupport PGNSP PGUID 12 1 0 0 0 f f f f t f i 1 0 2278 "2281" _null_ _null_ _null_ _null_ idbtoidsortsupport _null_ _null_ _null_ ));
+DESCR("sort support");
+DATA(insert OID = 4187 (  idbtoidvectorcmp    PGNSP PGUID 12 1 0 0 0 f f f f t f i 2 0 23 "30 30" _null_ _null_ _null_ _null_ idbtoidvectorcmp _null_ _null_ _null_ ));
+DESCR("less-equal-greater");
+DATA(insert OID = 4188 (  idbtabstimecmp	   PGNSP PGUID 12 1 0 0 0 f f f f t f i 2 0 23 "702 702" _null_ _null_ _null_ _null_ idbtabstimecmp _null_ _null_ _null_ ));
+DESCR("less-equal-greater");
+DATA(insert OID = 4189 (  idbtcharcmp		   PGNSP PGUID 12 1 0 0 0 f f f f t f i 2 0 23 "18 18" _null_ _null_ _null_ _null_ idbtcharcmp _null_ _null_ _null_ ));
+DESCR("less-equal-greater");
+DATA(insert OID = 4190 (  idbtnamecmp		   PGNSP PGUID 12 1 0 0 0 f f f f t f i 2 0 23 "19 19" _null_ _null_ _null_ _null_ idbtnamecmp _null_ _null_ _null_ ));
+DESCR("less-equal-greater");
+DATA(insert OID = 4191 ( idbtnamesortsupport PGNSP PGUID 12 1 0 0 0 f f f f t f i 1 0 2278 "2281" _null_ _null_ _null_ _null_ idbtnamesortsupport _null_ _null_ _null_ ));
+DESCR("sort support");
+DATA(insert OID = 4192 (  idbttextcmp		   PGNSP PGUID 12 1 0 0 0 f f f f t f i 2 0 23 "25 25" _null_ _null_ _null_ _null_ idbttextcmp _null_ _null_ _null_ ));
+DESCR("less-equal-greater");
+DATA(insert OID = 4193 (  idbtreltimecmp	   PGNSP PGUID 12 1 0 0 0 f f f f t f i 2 0 23 "703 703" _null_ _null_ _null_ _null_ idbtreltimecmp _null_ _null_ _null_ ));
+DESCR("less-equal-greater");
+DATA(insert OID = 4194 (  idbttintervalcmp    PGNSP PGUID 12 1 0 0 0 f f f f t f i 2 0 23 "704 704" _null_ _null_ _null_ _null_ idbttintervalcmp _null_ _null_ _null_ ));
+DESCR("less-equal-greater");
+DATA(insert OID = 4195 (  idbtarraycmp		   PGNSP PGUID 12 1 0 0 0 f f f f t f i 2 0 23 "2277 2277" _null_ _null_ _null_ _null_ idbtarraycmp _null_ _null_ _null_ ));
+DESCR("less-equal-greater");
+
+DATA(insert OID = 4196 ( idbttidcmp		   PGNSP PGUID 12 1 0 0 0 f f f f t f i 2 0 23 "27 27" _null_ _null_ _null_ _null_ idbttidcmp _null_ _null_ _null_ ));
+DATA(insert OID = 4197 (  idbtboolcmp			PGNSP PGUID 12 1 0 0 0 f f f f t f i 2 0 23 "16 16" _null_ _null_ _null_ _null_ idbtboolcmp _null_ _null_ _null_ ));
+DATA(insert OID = 4198 ( idbttext_pattern_cmp  PGNSP PGUID 12 1 0 0 0 f f f f t f i 2 0 23 "25 25" _null_ _null_ _null_ _null_ idbttext_pattern_cmp _null_ _null_ _null_ ));
+DATA(insert OID = 4199 ( idbtbpchar_pattern_cmp PGNSP PGUID 12 1 0 0 0 f f f f t f i 2 0 23 "1042 1042" _null_ _null_ _null_ _null_ idbtbpchar_pattern_cmp _null_ _null_ _null_ ));
+DATA(insert OID = 4200 (  idbtrecordcmp	   PGNSP PGUID 12 1 0 0 0 f f f f t f i 2 0 23 "2249 2249" _null_ _null_ _null_ _null_ idbtrecordcmp _null_ _null_ _null_ ));
+
+
+
+DATA(insert OID = 4201 ( idbtint48cmp			PGNSP PGUID 12 1 0 0 0 f f f f t f i 2 0 23 "23 20" _null_ _null_ _null_ _null_ idbtint48cmp _null_ _null_ _null_ ));
+DESCR("less-equal-greater");
+DATA(insert OID = 4202 ( idbtint84cmp			PGNSP PGUID 12 1 0 0 0 f f f f t f i 2 0 23 "20 23" _null_ _null_ _null_ _null_ idbtint84cmp _null_ _null_ _null_ ));
+DESCR("less-equal-greater");
+DATA(insert OID = 4203 ( idbtint24cmp			PGNSP PGUID 12 1 0 0 0 f f f f t f i 2 0 23 "21 23" _null_ _null_ _null_ _null_ idbtint24cmp _null_ _null_ _null_ ));
+DESCR("less-equal-greater");
+DATA(insert OID = 4204 ( idbtint42cmp			PGNSP PGUID 12 1 0 0 0 f f f f t f i 2 0 23 "23 21" _null_ _null_ _null_ _null_ idbtint42cmp _null_ _null_ _null_ ));
+DESCR("less-equal-greater");
+DATA(insert OID = 4205 ( idbtint28cmp			PGNSP PGUID 12 1 0 0 0 f f f f t f i 2 0 23 "21 20" _null_ _null_ _null_ _null_ idbtint28cmp _null_ _null_ _null_ ));
+DESCR("less-equal-greater");
+DATA(insert OID = 4206 ( idbtint82cmp			PGNSP PGUID 12 1 0 0 0 f f f f t f i 2 0 23 "20 21" _null_ _null_ _null_ _null_ idbtint82cmp _null_ _null_ _null_ ));
+DESCR("less-equal-greater");
+DATA(insert OID = 4207 ( idbtfloat48cmp		PGNSP PGUID 12 1 0 0 0 f f f f t f i 2 0 23 "700 701" _null_ _null_ _null_ _null_ idbtfloat48cmp _null_ _null_ _null_ ));
+DESCR("less-equal-greater");
+DATA(insert OID = 4208 ( idbtfloat84cmp		PGNSP PGUID 12 1 0 0 0 f f f f t f i 2 0 23 "701 700" _null_ _null_ _null_ _null_ idbtfloat84cmp _null_ _null_ _null_ ));
+DESCR("less-equal-greater");
+
+/*****************************************************************/
+
+
+
+
+
 /*
  * Symbolic values for provolatile column: these indicate whether the result
  * of a function is dependent *only* on the values of its explicit arguments,

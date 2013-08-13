@@ -502,6 +502,7 @@ DATA(insert (	2968  2950 2950 3 s 2972	403 0 ));
 DATA(insert (	2968  2950 2950 4 s 2977	403 0 ));
 DATA(insert (	2968  2950 2950 5 s 2975	403 0 ));
 
+
 /*
  *	hash index _ops
  */
@@ -780,5 +781,440 @@ DATA(insert (	3474   3831 3831 7 s	3890 4000 0 ));
 DATA(insert (	3474   3831 3831 8 s	3892 4000 0 ));
 DATA(insert (	3474   3831 2283 16 s	3889 4000 0 ));
 DATA(insert (	3474   3831 3831 18 s	3882 4000 0 ));
+
+
+
+/************************************************************/
+
+
+/*
+ *	idist integer_ops
+ */
+
+/* default operators int2 */
+DATA(insert (	4130   21 21 1 s	95	4040 0 ));
+DATA(insert (	4130   21 21 2 s	522 4040 0 ));
+DATA(insert (	4130   21 21 3 s	94	4040 0 ));
+DATA(insert (	4130   21 21 4 s	524 4040 0 ));
+DATA(insert (	4130   21 21 5 s	520 4040 0 ));
+/* crosstype operators int24 */
+DATA(insert (	4130   21 23 1 s	534 4040 0 ));
+DATA(insert (	4130   21 23 2 s	540 4040 0 ));
+DATA(insert (	4130   21 23 3 s	532 4040 0 ));
+DATA(insert (	4130   21 23 4 s	542 4040 0 ));
+DATA(insert (	4130   21 23 5 s	536 4040 0 ));
+/* crosstype operators int28 */
+DATA(insert (	4130   21 20 1 s	1864	4040 0 ));
+DATA(insert (	4130   21 20 2 s	1866	4040 0 ));
+DATA(insert (	4130   21 20 3 s	1862	4040 0 ));
+DATA(insert (	4130   21 20 4 s	1867	4040 0 ));
+DATA(insert (	4130   21 20 5 s	1865	4040 0 ));
+/* default operators int4 */
+DATA(insert (	4130   23 23 1 s	97	4040 0 ));
+DATA(insert (	4130   23 23 2 s	523 4040 0 ));
+DATA(insert (	4130   23 23 3 s	96	4040 0 ));
+DATA(insert (	4130   23 23 4 s	525 4040 0 ));
+DATA(insert (	4130   23 23 5 s	521 4040 0 ));
+/* crosstype operators int42 */
+DATA(insert (	4130   23 21 1 s	535 4040 0 ));
+DATA(insert (	4130   23 21 2 s	541 4040 0 ));
+DATA(insert (	4130   23 21 3 s	533 4040 0 ));
+DATA(insert (	4130   23 21 4 s	543 4040 0 ));
+DATA(insert (	4130   23 21 5 s	537 4040 0 ));
+/* crosstype operators int48 */
+DATA(insert (	4130   23 20 1 s	37	4040 0 ));
+DATA(insert (	4130   23 20 2 s	80	4040 0 ));
+DATA(insert (	4130   23 20 3 s	15	4040 0 ));
+DATA(insert (	4130   23 20 4 s	82	4040 0 ));
+DATA(insert (	4130   23 20 5 s	76	4040 0 ));
+/* default operators int8 */
+DATA(insert (	4130   20 20 1 s	412 4040 0 ));
+DATA(insert (	4130   20 20 2 s	414 4040 0 ));
+DATA(insert (	4130   20 20 3 s	410 4040 0 ));
+DATA(insert (	4130   20 20 4 s	415 4040 0 ));
+DATA(insert (	4130   20 20 5 s	413 4040 0 ));
+/* crosstype operators int82 */
+DATA(insert (	4130   20 21 1 s	1870	4040 0 ));
+DATA(insert (	4130   20 21 2 s	1872	4040 0 ));
+DATA(insert (	4130   20 21 3 s	1868	4040 0 ));
+DATA(insert (	4130   20 21 4 s	1873	4040 0 ));
+DATA(insert (	4130   20 21 5 s	1871	4040 0 ));
+/* crosstype operators int84 */
+DATA(insert (	4130   20 23 1 s	418 4040 0 ));
+DATA(insert (	4130   20 23 2 s	420 4040 0 ));
+DATA(insert (	4130   20 23 3 s	416 4040 0 ));
+DATA(insert (	4130   20 23 4 s	430 4040 0 ));
+DATA(insert (	4130   20 23 5 s	419 4040 0 ));
+
+/*
+ *	idist oid_ops
+ */
+
+DATA(insert (	4135   26 26 1 s	609 4040 0 ));
+DATA(insert (	4135   26 26 2 s	611 4040 0 ));
+DATA(insert (	4135   26 26 3 s	607 4040 0 ));
+DATA(insert (	4135   26 26 4 s	612 4040 0 ));
+DATA(insert (	4135   26 26 5 s	610 4040 0 ));
+
+/*
+ * idist tid_ops
+ */
+
+DATA(insert (	4145   27 27 1 s 2799 4040 0 ));
+DATA(insert (	4145   27 27 2 s 2801 4040 0 ));
+DATA(insert (	4145   27 27 3 s 387  4040 0 ));
+DATA(insert (	4145   27 27 4 s 2802 4040 0 ));
+DATA(insert (	4145   27 27 5 s 2800 4040 0 ));
+
+/*
+ *	idist oidvector_ops
+ */
+
+DATA(insert (	4136   30 30 1 s	645 4040 0 ));
+DATA(insert (	4136   30 30 2 s	647 4040 0 ));
+DATA(insert (	4136   30 30 3 s	649 4040 0 ));
+DATA(insert (	4136   30 30 4 s	648 4040 0 ));
+DATA(insert (	4136   30 30 5 s	646 4040 0 ));
+
+/*
+ *	idist float_ops
+ */
+
+/* default operators float4 */
+DATA(insert (	4128   700 700 1 s	622 4040 0 ));
+DATA(insert (	4128   700 700 2 s	624 4040 0 ));
+DATA(insert (	4128   700 700 3 s	620 4040 0 ));
+DATA(insert (	4128   700 700 4 s	625 4040 0 ));
+DATA(insert (	4128   700 700 5 s	623 4040 0 ));
+/* crosstype operators float48 */
+DATA(insert (	4128   700 701 1 s	1122 4040 0 ));
+DATA(insert (	4128   700 701 2 s	1124 4040 0 ));
+DATA(insert (	4128   700 701 3 s	1120 4040 0 ));
+DATA(insert (	4128   700 701 4 s	1125 4040 0 ));
+DATA(insert (	4128   700 701 5 s	1123 4040 0 ));
+/* default operators float8 */
+DATA(insert (	4128   701 701 1 s	672 4040 0 ));
+DATA(insert (	4128   701 701 2 s	673 4040 0 ));
+DATA(insert (	4128   701 701 3 s	670 4040 0 ));
+DATA(insert (	4128   701 701 4 s	675 4040 0 ));
+DATA(insert (	4128   701 701 5 s	674 4040 0 ));
+/* crosstype operators float84 */
+DATA(insert (	4128   701 700 1 s	1132 4040 0 ));
+DATA(insert (	4128   701 700 2 s	1134 4040 0 ));
+DATA(insert (	4128   701 700 3 s	1130 4040 0 ));
+DATA(insert (	4128   701 700 4 s	1135 4040 0 ));
+DATA(insert (	4128   701 700 5 s	1133 4040 0 ));
+
+/*
+ *	idist char_ops
+ */
+
+DATA(insert (	4126   18 18 1 s  631	4040 0 ));
+DATA(insert (	4126   18 18 2 s  632	4040 0 ));
+DATA(insert (	4126   18 18 3 s   92	4040 0 ));
+DATA(insert (	4126   18 18 4 s  634	4040 0 ));
+DATA(insert (	4126   18 18 5 s  633	4040 0 ));
+
+/*
+ *	idist name_ops
+ */
+
+DATA(insert (	4133   19 19 1 s	660 4040 0 ));
+DATA(insert (	4133   19 19 2 s	661 4040 0 ));
+DATA(insert (	4133   19 19 3 s	93	4040 0 ));
+DATA(insert (	4133   19 19 4 s	663 4040 0 ));
+DATA(insert (	4133   19 19 5 s	662 4040 0 ));
+
+/*
+ *	idist text_ops
+ */
+
+DATA(insert (	4138   25 25 1 s	664 4040 0 ));
+DATA(insert (	4138   25 25 2 s	665 4040 0 ));
+DATA(insert (	4138   25 25 3 s	98	4040 0 ));
+DATA(insert (	4138   25 25 4 s	667 4040 0 ));
+DATA(insert (	4138   25 25 5 s	666 4040 0 ));
+
+/*
+ *	idist bpchar_ops
+ */
+
+DATA(insert (	4124   1042 1042 1 s 1058	4040 0 ));
+DATA(insert (	4124   1042 1042 2 s 1059	4040 0 ));
+DATA(insert (	4124   1042 1042 3 s 1054	4040 0 ));
+DATA(insert (	4124   1042 1042 4 s 1061	4040 0 ));
+DATA(insert (	4124   1042 1042 5 s 1060	4040 0 ));
+
+/*
+ *	idist bytea_ops
+ */
+
+DATA(insert (	4125   17 17 1 s 1957	4040 0 ));
+DATA(insert (	4125   17 17 2 s 1958	4040 0 ));
+DATA(insert (	4125   17 17 3 s 1955	4040 0 ));
+DATA(insert (	4125   17 17 4 s 1960	4040 0 ));
+DATA(insert (	4125   17 17 5 s 1959	4040 0 ));
+
+/*
+ *	idist abstime_ops
+ */
+
+DATA(insert (	4120   702 702 1 s  562	4040 0 ));
+DATA(insert (	4120   702 702 2 s  564	4040 0 ));
+DATA(insert (	4120   702 702 3 s  560	4040 0 ));
+DATA(insert (	4120   702 702 4 s  565	4040 0 ));
+DATA(insert (	4120   702 702 5 s  563	4040 0 ));
+
+/*
+ *	idist datetime_ops
+ */
+
+/* default operators date */
+DATA(insert (	4127   1082 1082 1 s 1095	4040 0 ));
+DATA(insert (	4127   1082 1082 2 s 1096	4040 0 ));
+DATA(insert (	4127   1082 1082 3 s 1093	4040 0 ));
+DATA(insert (	4127   1082 1082 4 s 1098	4040 0 ));
+DATA(insert (	4127   1082 1082 5 s 1097	4040 0 ));
+/* crosstype operators vs timestamp */
+DATA(insert (	4127   1082 1114 1 s 2345	4040 0 ));
+DATA(insert (	4127   1082 1114 2 s 2346	4040 0 ));
+DATA(insert (	4127   1082 1114 3 s 2347	4040 0 ));
+DATA(insert (	4127   1082 1114 4 s 2348	4040 0 ));
+DATA(insert (	4127   1082 1114 5 s 2349	4040 0 ));
+/* crosstype operators vs timestamptz */
+DATA(insert (	4127   1082 1184 1 s 2358	4040 0 ));
+DATA(insert (	4127   1082 1184 2 s 2359	4040 0 ));
+DATA(insert (	4127   1082 1184 3 s 2360	4040 0 ));
+DATA(insert (	4127   1082 1184 4 s 2361	4040 0 ));
+DATA(insert (	4127   1082 1184 5 s 2362	4040 0 ));
+/* default operators timestamp */
+DATA(insert (	4127   1114 1114 1 s 2062	4040 0 ));
+DATA(insert (	4127   1114 1114 2 s 2063	4040 0 ));
+DATA(insert (	4127   1114 1114 3 s 2060	4040 0 ));
+DATA(insert (	4127   1114 1114 4 s 2065	4040 0 ));
+DATA(insert (	4127   1114 1114 5 s 2064	4040 0 ));
+/* crosstype operators vs date */
+DATA(insert (	4127   1114 1082 1 s 2371	4040 0 ));
+DATA(insert (	4127   1114 1082 2 s 2372	4040 0 ));
+DATA(insert (	4127   1114 1082 3 s 2373	4040 0 ));
+DATA(insert (	4127   1114 1082 4 s 2374	4040 0 ));
+DATA(insert (	4127   1114 1082 5 s 2375	4040 0 ));
+/* crosstype operators vs timestamptz */
+DATA(insert (	4127   1114 1184 1 s 2534	4040 0 ));
+DATA(insert (	4127   1114 1184 2 s 2535	4040 0 ));
+DATA(insert (	4127   1114 1184 3 s 2536	4040 0 ));
+DATA(insert (	4127   1114 1184 4 s 2537	4040 0 ));
+DATA(insert (	4127   1114 1184 5 s 2538	4040 0 ));
+/* default operators timestamptz */
+DATA(insert (	4127   1184 1184 1 s 1322	4040 0 ));
+DATA(insert (	4127   1184 1184 2 s 1323	4040 0 ));
+DATA(insert (	4127   1184 1184 3 s 1320	4040 0 ));
+DATA(insert (	4127   1184 1184 4 s 1325	4040 0 ));
+DATA(insert (	4127   1184 1184 5 s 1324	4040 0 ));
+/* crosstype operators vs date */
+DATA(insert (	4127   1184 1082 1 s 2384	4040 0 ));
+DATA(insert (	4127   1184 1082 2 s 2385	4040 0 ));
+DATA(insert (	4127   1184 1082 3 s 2386	4040 0 ));
+DATA(insert (	4127   1184 1082 4 s 2387	4040 0 ));
+DATA(insert (	4127   1184 1082 5 s 2388	4040 0 ));
+/* crosstype operators vs timestamp */
+DATA(insert (	4127   1184 1114 1 s 2540	4040 0 ));
+DATA(insert (	4127   1184 1114 2 s 2541	4040 0 ));
+DATA(insert (	4127   1184 1114 3 s 2542	4040 0 ));
+DATA(insert (	4127   1184 1114 4 s 2543	4040 0 ));
+DATA(insert (	4127   1184 1114 5 s 2544	4040 0 ));
+
+/*
+ *	idist time_ops
+ */
+
+DATA(insert (	4139   1083 1083 1 s 1110 4040 0 ));
+DATA(insert (	4139   1083 1083 2 s 1111 4040 0 ));
+DATA(insert (	4139   1083 1083 3 s 1108 4040 0 ));
+DATA(insert (	4139   1083 1083 4 s 1113 4040 0 ));
+DATA(insert (	4139   1083 1083 5 s 1112 4040 0 ));
+
+/*
+ *	idist timetz_ops
+ */
+
+DATA(insert (	4140   1266 1266 1 s 1552 4040 0 ));
+DATA(insert (	4140   1266 1266 2 s 1553 4040 0 ));
+DATA(insert (	4140   1266 1266 3 s 1550 4040 0 ));
+DATA(insert (	4140   1266 1266 4 s 1555 4040 0 ));
+DATA(insert (	4140   1266 1266 5 s 1554 4040 0 ));
+
+/*
+ *	idist interval_ops
+ */
+
+DATA(insert (	4131   1186 1186 1 s 1332 4040 0 ));
+DATA(insert (	4131   1186 1186 2 s 1333 4040 0 ));
+DATA(insert (	4131   1186 1186 3 s 1330 4040 0 ));
+DATA(insert (	4131   1186 1186 4 s 1335 4040 0 ));
+DATA(insert (	4131   1186 1186 5 s 1334 4040 0 ));
+
+/*
+ *	idist macaddr
+ */
+
+DATA(insert (	4132   829 829 1 s 1222 4040 0 ));
+DATA(insert (	4132   829 829 2 s 1223 4040 0 ));
+DATA(insert (	4132   829 829 3 s 1220 4040 0 ));
+DATA(insert (	4132   829 829 4 s 1225 4040 0 ));
+DATA(insert (	4132   829 829 5 s 1224 4040 0 ));
+
+/*
+ *	idist network
+ */
+
+DATA(insert (	4129   869 869 1 s 1203 4040 0 ));
+DATA(insert (	4129   869 869 2 s 1204 4040 0 ));
+DATA(insert (	4129   869 869 3 s 1201 4040 0 ));
+DATA(insert (	4129   869 869 4 s 1206 4040 0 ));
+DATA(insert (	4129   869 869 5 s 1205 4040 0 ));
+
+/*
+ *	idist numeric
+ */
+
+DATA(insert (	4134   1700 1700 1 s 1754 4040 0 ));
+DATA(insert (	4134   1700 1700 2 s 1755 4040 0 ));
+DATA(insert (	4134   1700 1700 3 s 1752 4040 0 ));
+DATA(insert (	4134   1700 1700 4 s 1757 4040 0 ));
+DATA(insert (	4134   1700 1700 5 s 1756 4040 0 ));
+
+/*
+ *	idist bool
+ */
+
+DATA(insert (	4123   16 16 1 s 58		4040 0 ));
+DATA(insert (	4123   16 16 2 s 1694	4040 0 ));
+DATA(insert (	4123   16 16 3 s 91		4040 0 ));
+DATA(insert (	4123   16 16 4 s 1695	4040 0 ));
+DATA(insert (	4123   16 16 5 s 59		4040 0 ));
+
+/*
+ *	idist bit
+ */
+
+DATA(insert (	4122   1560 1560 1 s 1786	4040 0 ));
+DATA(insert (	4122   1560 1560 2 s 1788	4040 0 ));
+DATA(insert (	4122   1560 1560 3 s 1784	4040 0 ));
+DATA(insert (	4122   1560 1560 4 s 1789	4040 0 ));
+DATA(insert (	4122   1560 1560 5 s 1787	4040 0 ));
+
+/*
+ *	idist varbit
+ */
+
+DATA(insert (	4141   1562 1562 1 s 1806 4040 0 ));
+DATA(insert (	4141   1562 1562 2 s 1808 4040 0 ));
+DATA(insert (	4141   1562 1562 3 s 1804 4040 0 ));
+DATA(insert (	4141   1562 1562 4 s 1809 4040 0 ));
+DATA(insert (	4141   1562 1562 5 s 1807 4040 0 ));
+
+/*
+ *	idist text pattern
+ */
+
+DATA(insert (	4142   25 25 1 s 2314 4040 0 ));
+DATA(insert (	4142   25 25 2 s 2315 4040 0 ));
+DATA(insert (	4142   25 25 3 s 98   4040 0 ));
+DATA(insert (	4142   25 25 4 s 2317 4040 0 ));
+DATA(insert (	4142   25 25 5 s 2318 4040 0 ));
+
+/*
+ *	idist bpchar pattern
+ */
+
+DATA(insert (	4143   1042 1042 1 s 2326 4040 0 ));
+DATA(insert (	4143   1042 1042 2 s 2327 4040 0 ));
+DATA(insert (	4143   1042 1042 3 s 1054 4040 0 ));
+DATA(insert (	4143   1042 1042 4 s 2329 4040 0 ));
+DATA(insert (	4143   1042 1042 5 s 2330 4040 0 ));
+
+/*
+ *	idist money_ops
+ */
+
+DATA(insert (	4144   790 790 1 s	902 4040 0 ));
+DATA(insert (	4144   790 790 2 s	904 4040 0 ));
+DATA(insert (	4144   790 790 3 s	900 4040 0 ));
+DATA(insert (	4144   790 790 4 s	905 4040 0 ));
+DATA(insert (	4144   790 790 5 s	903 4040 0 ));
+
+/*
+ *	idist reltime_ops
+ */
+
+DATA(insert (	4146   703 703 1 s	568 4040 0 ));
+DATA(insert (	4146   703 703 2 s	570 4040 0 ));
+DATA(insert (	4146   703 703 3 s	566 4040 0 ));
+DATA(insert (	4146   703 703 4 s	571 4040 0 ));
+DATA(insert (	4146   703 703 5 s	569 4040 0 ));
+
+/*
+ *	idist tinterval_ops
+ */
+
+DATA(insert (	4147   704 704 1 s	813 4040 0 ));
+DATA(insert (	4147   704 704 2 s	815 4040 0 ));
+DATA(insert (	4147   704 704 3 s	811 4040 0 ));
+DATA(insert (	4147   704 704 4 s	816 4040 0 ));
+DATA(insert (	4147   704 704 5 s	814 4040 0 ));
+
+/*
+ *	idist array_ops
+ */
+
+DATA(insert (	4121   2277 2277 1 s 1072	4040 0 ));
+DATA(insert (	4121   2277 2277 2 s 1074	4040 0 ));
+DATA(insert (	4121   2277 2277 3 s 1070	4040 0 ));
+DATA(insert (	4121   2277 2277 4 s 1075	4040 0 ));
+DATA(insert (	4121   2277 2277 5 s 1073	4040 0 ));
+
+/*
+ *	idist record_ops
+ */
+
+DATA(insert (	4137  2249 2249 1 s 2990	4040 0 ));
+DATA(insert (	4137  2249 2249 2 s 2992	4040 0 ));
+DATA(insert (	4137  2249 2249 3 s 2988	4040 0 ));
+DATA(insert (	4137  2249 2249 4 s 2993	4040 0 ));
+DATA(insert (	4137  2249 2249 5 s 2991	4040 0 ));
+
+/*
+ * idist uuid_ops
+ */
+
+DATA(insert (	4148  2950 2950 1 s 2974	4040 0 ));
+DATA(insert (	4148  2950 2950 2 s 2976	4040 0 ));
+DATA(insert (	4148  2950 2950 3 s 2972	4040 0 ));
+DATA(insert (	4148  2950 2950 4 s 2977	4040 0 ));
+DATA(insert (	4148  2950 2950 5 s 2975	4040 0 ));
+
+
+/*
+ * idist enum_ops
+ */
+DATA(insert (	4149   3500 3500 1 s 3518 4040 0 ));
+DATA(insert (	4149   3500 3500 2 s 3520 4040 0 ));
+DATA(insert (	4149   3500 3500 3 s 3516 4040 0 ));
+DATA(insert (	4149   3500 3500 4 s 3521 4040 0 ));
+DATA(insert (	4149   3500 3500 5 s 3519 4040 0 ));
+
+
+/*
+ * idist tsvector_ops
+ */
+DATA(insert (	4150   3614 3614 1 s	3627 4040 0 ));
+DATA(insert (	4150   3614 3614 2 s	3628 4040 0 ));
+DATA(insert (	4150   3614 3614 3 s	3629 4040 0 ));
+DATA(insert (	4150   3614 3614 4 s	3631 4040 0 ));
+DATA(insert (	4150   3614 3614 5 s	3632 4040 0 ));
+
+
+/************************************************************/
 
 #endif   /* PG_AMOP_H */

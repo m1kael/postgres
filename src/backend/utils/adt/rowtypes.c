@@ -1281,3 +1281,9 @@ btrecordcmp(PG_FUNCTION_ARGS)
 {
 	PG_RETURN_INT32(record_cmp(fcinfo));
 }
+
+Datum
+idbtrecordcmp(PG_FUNCTION_ARGS)
+{
+	PG_RETURN_INT32(record_cmp(fcinfo));
+}

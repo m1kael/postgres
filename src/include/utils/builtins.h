@@ -313,6 +313,7 @@ extern Datum btcharcmp(PG_FUNCTION_ARGS);
 extern Datum btnamecmp(PG_FUNCTION_ARGS);
 extern Datum bttextcmp(PG_FUNCTION_ARGS);
 
+
 /*
  *		Per-opclass sort support functions for new btrees.	Like the
  *		functions above, these are stored in pg_amproc; most are defined in
@@ -325,6 +326,66 @@ extern Datum btfloat4sortsupport(PG_FUNCTION_ARGS);
 extern Datum btfloat8sortsupport(PG_FUNCTION_ARGS);
 extern Datum btoidsortsupport(PG_FUNCTION_ARGS);
 extern Datum btnamesortsupport(PG_FUNCTION_ARGS);
+
+/************************************************/
+
+
+/*
+ *		Per-opclass comparison functions for new idist btrees.  These are
+ *		stored in pg_amproc; most are defined in access/idist/idistcompare.c
+ */
+extern Datum idbtboolcmp(PG_FUNCTION_ARGS);
+extern Datum idbtint2cmp(PG_FUNCTION_ARGS);
+extern Datum idbtint4cmp(PG_FUNCTION_ARGS);
+extern Datum idbtint8cmp(PG_FUNCTION_ARGS);
+extern Datum idbtfloat4cmp(PG_FUNCTION_ARGS);
+extern Datum idbtfloat8cmp(PG_FUNCTION_ARGS);
+extern Datum idbtint48cmp(PG_FUNCTION_ARGS);
+extern Datum idbtint84cmp(PG_FUNCTION_ARGS);
+extern Datum idbtint24cmp(PG_FUNCTION_ARGS);
+extern Datum idbtint42cmp(PG_FUNCTION_ARGS);
+extern Datum idbtint28cmp(PG_FUNCTION_ARGS);
+extern Datum idbtint82cmp(PG_FUNCTION_ARGS);
+extern Datum idbtfloat48cmp(PG_FUNCTION_ARGS);
+extern Datum idbtfloat84cmp(PG_FUNCTION_ARGS);
+extern Datum idbtoidcmp(PG_FUNCTION_ARGS);
+extern Datum idbtoidvectorcmp(PG_FUNCTION_ARGS);
+extern Datum idbtabstimecmp(PG_FUNCTION_ARGS);
+extern Datum idbtreltimecmp(PG_FUNCTION_ARGS);
+extern Datum idbttintervalcmp(PG_FUNCTION_ARGS);
+extern Datum idbtcharcmp(PG_FUNCTION_ARGS);
+extern Datum idbtnamecmp(PG_FUNCTION_ARGS);
+extern Datum idbttextcmp(PG_FUNCTION_ARGS);
+
+
+/*
+ *		Per-opclass sort support functions for new btrees.	Like the
+ *		functions above, these are stored in pg_amproc; most are defined in
+ *		access/nbtree/nbtcompare.c
+ */
+extern Datum idbtint2sortsupport(PG_FUNCTION_ARGS);
+extern Datum idbtint4sortsupport(PG_FUNCTION_ARGS);
+extern Datum idbtint8sortsupport(PG_FUNCTION_ARGS);
+extern Datum idbtfloat4sortsupport(PG_FUNCTION_ARGS);
+extern Datum idbtfloat8sortsupport(PG_FUNCTION_ARGS);
+extern Datum idbtoidsortsupport(PG_FUNCTION_ARGS);
+extern Datum idbtnamesortsupport(PG_FUNCTION_ARGS);
+
+/* rowtypes.c */
+extern Datum idbtrecordcmp(PG_FUNCTION_ARGS);
+
+/* tid.c */
+extern Datum idbttidcmp(PG_FUNCTION_ARGS);
+
+/* varchar.c */
+extern Datum idbtbpchar_pattern_cmp(PG_FUNCTION_ARGS);
+
+/* varlena.c */
+extern Datum idbttext_pattern_cmp(PG_FUNCTION_ARGS);
+
+/************************************************************/
+
+
 
 /* float.c */
 extern PGDLLIMPORT int extra_float_digits;

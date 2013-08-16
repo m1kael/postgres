@@ -228,6 +228,16 @@ bttidcmp(PG_FUNCTION_ARGS)
 }
 
 Datum
+idbttidcmp(PG_FUNCTION_ARGS)
+{
+	ItemPointer arg1 = PG_GETARG_ITEMPOINTER(0);
+	ItemPointer arg2 = PG_GETARG_ITEMPOINTER(1);
+
+	PG_RETURN_INT32(ItemPointerCompare(arg1, arg2));
+}
+
+
+Datum
 tidlarger(PG_FUNCTION_ARGS)
 {
 	ItemPointer arg1 = PG_GETARG_ITEMPOINTER(0);

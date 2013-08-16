@@ -1030,3 +1030,19 @@ btbpchar_pattern_cmp(PG_FUNCTION_ARGS)
 
 	PG_RETURN_INT32(result);
 }
+
+
+Datum
+idbtbpchar_pattern_cmp(PG_FUNCTION_ARGS)
+{
+	BpChar	   *arg1 = PG_GETARG_BPCHAR_PP(0);
+	BpChar	   *arg2 = PG_GETARG_BPCHAR_PP(1);
+	int			result;
+
+	result = internal_bpchar_pattern_compare(arg1, arg2);
+
+	PG_FREE_IF_COPY(arg1, 0);
+	PG_FREE_IF_COPY(arg2, 1);
+
+	PG_RETURN_INT32(result);
+}

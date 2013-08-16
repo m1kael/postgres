@@ -1,7 +1,7 @@
 /*-------------------------------------------------------------------------
  *
- * nbtcompare.c
- *	  Comparison functions for btree access method.
+ * idistcompare.c
+ *	  Comparison functions for idist access method.
  *
  * Portions Copyright (c) 1996-2013, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
@@ -343,3 +343,12 @@ idbtnamesortsupport(PG_FUNCTION_ARGS)
 	ssup->comparator = idbtnamefastcmp;
 	PG_RETURN_VOID();
 }
+
+
+/***********************************************************/
+/* adding random functions from other files here */
+
+
+
+
+/***********************************************************/

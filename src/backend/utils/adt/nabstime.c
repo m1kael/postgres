@@ -452,6 +452,18 @@ btabstimecmp(PG_FUNCTION_ARGS)
 }
 
 
+Datum
+idbtabstimecmp(PG_FUNCTION_ARGS)
+{
+	AbsoluteTime t1 = PG_GETARG_ABSOLUTETIME(0);
+	AbsoluteTime t2 = PG_GETARG_ABSOLUTETIME(1);
+
+	PG_RETURN_INT32(abstime_cmp_internal(t1, t2));
+}
+
+
+
+
 /* timestamp_abstime()
  * Convert timestamp to abstime.
  */
@@ -1130,6 +1142,16 @@ btreltimecmp(PG_FUNCTION_ARGS)
 }
 
 
+Datum
+idbtreltimecmp(PG_FUNCTION_ARGS)
+{
+	RelativeTime t1 = PG_GETARG_RELATIVETIME(0);
+	RelativeTime t2 = PG_GETARG_RELATIVETIME(1);
+
+	PG_RETURN_INT32(reltime_cmp_internal(t1, t2));
+}
+
+
 /*
  *		tintervalsame	- returns true iff tinterval i1 is same as tinterval i2
  *		Check begin and end time.
@@ -1277,6 +1299,17 @@ bttintervalcmp(PG_FUNCTION_ARGS)
 
 	PG_RETURN_INT32(tinterval_cmp_internal(i1, i2));
 }
+
+
+Datum
+idbttintervalcmp(PG_FUNCTION_ARGS)
+{
+	TimeInterval i1 = PG_GETARG_TIMEINTERVAL(0);
+	TimeInterval i2 = PG_GETARG_TIMEINTERVAL(1);
+
+	PG_RETURN_INT32(tinterval_cmp_internal(i1, i2));
+}
+
 
 
 /*

@@ -3327,6 +3327,14 @@ btarraycmp(PG_FUNCTION_ARGS)
 	PG_RETURN_INT32(array_cmp(fcinfo));
 }
 
+
+Datum
+idbtarraycmp(PG_FUNCTION_ARGS)
+{
+	PG_RETURN_INT32(array_cmp(fcinfo));
+}
+
+
 /*
  * array_cmp()
  * Internal comparison function for arrays.

@@ -1685,6 +1685,23 @@ bttextcmp(PG_FUNCTION_ARGS)
 
 
 Datum
+idbttextcmp(PG_FUNCTION_ARGS)
+{
+	text	   *arg1 = PG_GETARG_TEXT_PP(0);
+	text	   *arg2 = PG_GETARG_TEXT_PP(1);
+	int32		result;
+
+	result = text_cmp(arg1, arg2, PG_GET_COLLATION());
+
+	PG_FREE_IF_COPY(arg1, 0);
+	PG_FREE_IF_COPY(arg2, 1);
+
+	PG_RETURN_INT32(result);
+}
+
+
+
+Datum
 text_larger(PG_FUNCTION_ARGS)
 {
 	text	   *arg1 = PG_GETARG_TEXT_PP(0);
@@ -1804,6 +1821,22 @@ text_pattern_gt(PG_FUNCTION_ARGS)
 
 Datum
 bttext_pattern_cmp(PG_FUNCTION_ARGS)
+{
+	text	   *arg1 = PG_GETARG_TEXT_PP(0);
+	text	   *arg2 = PG_GETARG_TEXT_PP(1);
+	int			result;
+
+	result = internal_text_pattern_compare(arg1, arg2);
+
+	PG_FREE_IF_COPY(arg1, 0);
+	PG_FREE_IF_COPY(arg2, 1);
+
+	PG_RETURN_INT32(result);
+}
+
+
+Datum
+idbttext_pattern_cmp(PG_FUNCTION_ARGS)
 {
 	text	   *arg1 = PG_GETARG_TEXT_PP(0);
 	text	   *arg2 = PG_GETARG_TEXT_PP(1);

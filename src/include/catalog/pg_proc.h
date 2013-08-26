@@ -4760,14 +4760,16 @@ DATA(insert OID = 4171 (  idbtvacuumcleanup   PGNSP PGUID 12 1 0 0 0 f f f f t f
 DESCR("idbtree(internal)");
 DATA(insert OID = 4172 (  idbtcanreturn	   PGNSP PGUID 12 1 0 0 0 f f f f t f s 1 0 16 "2281" _null_ _null_ _null_ _null_ idbtcanreturn _null_ _null_ _null_ ));
 DESCR("idbtree(internal)");
-DATA(insert OID = 4173 (  idbtcostestimate   PGNSP PGUID 12 1 0 0 0 f f f f t f v 7 0 2278 "2281 2281 2281 2281 2281 2281 2281" _null_ _null_ _null_ _null_ idbtcostestimate _null_ _null_ _null_ ));
-DESCR("idbtree(internal)");
 DATA(insert OID = 4174 (  idbtoptions		   PGNSP PGUID 12 1 0 0 0 f f f f t f s 2 0 17 "1009 16" _null_ _null_ _null_ _null_  idbtoptions _null_ _null_ _null_ ));
 DESCR("idbtree(internal)");
+/*
+DATA(insert OID = 4173 (  idbtcostestimate   PGNSP PGUID 12 1 0 0 0 f f f f t f v 7 0 2278 "2281 2281 2281 2281 2281 2281 2281" _null_ _null_ _null_ _null_ idbtcostestimate _null_ _null_ _null_ ));
+DESCR("idbtree(internal)");
+*/
 
 
-
-
+/* all comparison operators i don't need, back to bt
+ * 
 DATA(insert OID = 4175 (  idbtint2cmp		   PGNSP PGUID 12 1 0 0 0 f f f f t f i 2 0 23 "21 21" _null_ _null_ _null_ _null_ idbtint2cmp _null_ _null_ _null_ ));
 DESCR("less-equal-greater");
 DATA(insert OID = 4176 ( idbtint2sortsupport PGNSP PGUID 12 1 0 0 0 f f f f t f i 1 0 2278 "2281" _null_ _null_ _null_ _null_ idbtint2sortsupport _null_ _null_ _null_ ));
@@ -4835,6 +4837,9 @@ DATA(insert OID = 4207 ( idbtfloat48cmp		PGNSP PGUID 12 1 0 0 0 f f f f t f i 2 
 DESCR("less-equal-greater");
 DATA(insert OID = 4208 ( idbtfloat84cmp		PGNSP PGUID 12 1 0 0 0 f f f f t f i 2 0 23 "701 700" _null_ _null_ _null_ _null_ idbtfloat84cmp _null_ _null_ _null_ ));
 DESCR("less-equal-greater");
+
+
+*/
 
 /*****************************************************************/
 

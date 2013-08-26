@@ -156,36 +156,36 @@ DATA(insert OID =  4120 (	4040		abstime_ops		PGNSP PGUID ));
 DATA(insert OID =  4121 (	4040		array_ops		PGNSP PGUID ));
 DATA(insert OID =  4122 (	4040		bit_ops			PGNSP PGUID ));
 DATA(insert OID =  4123 (	4040		bool_ops		PGNSP PGUID ));
-#define BOOL_BTREE_FAM_OID 4123
+//#define BOOL_BTREE_FAM_OID 4123
 DATA(insert OID =  4124 (	4040		bpchar_ops		PGNSP PGUID ));
-#define BPCHAR_BTREE_FAM_OID 4124
+//#define BPCHAR_BTREE_FAM_OID 4124
 DATA(insert OID =  4125 (	4040		bytea_ops		PGNSP PGUID ));
-#define BYTEA_BTREE_FAM_OID 4125
+//#define BYTEA_BTREE_FAM_OID 4125
 DATA(insert OID =  4126 (	4040		char_ops		PGNSP PGUID ));
 DATA(insert OID =  4127 (	4040		datetime_ops	PGNSP PGUID ));
 DATA(insert OID = 4128 (	4040		float_ops		PGNSP PGUID ));
 DATA(insert OID = 4129 (	4040		network_ops		PGNSP PGUID ));
-#define NETWORK_BTREE_FAM_OID 4129
+//#define NETWORK_BTREE_FAM_OID 4129
 DATA(insert OID = 4130 (	4040		integer_ops		PGNSP PGUID ));
-#define INTEGER_BTREE_FAM_OID 4130
+//#define INTEGER_BTREE_FAM_OID 4130
 DATA(insert OID = 4131 (	4040		interval_ops	PGNSP PGUID ));
 DATA(insert OID = 4132 (	4040		macaddr_ops		PGNSP PGUID ));
 DATA(insert OID = 4133 (	4040		name_ops		PGNSP PGUID ));
-#define NAME_BTREE_FAM_OID 4133
+//#define NAME_BTREE_FAM_OID 4133
 DATA(insert OID = 4134 (	4040		numeric_ops		PGNSP PGUID ));
 DATA(insert OID = 4135 (	4040		oid_ops			PGNSP PGUID ));
-#define OID_BTREE_FAM_OID 4135
+//#define OID_BTREE_FAM_OID 4135
 DATA(insert OID = 4136 (	4040		oidvector_ops	PGNSP PGUID ));
 DATA(insert OID = 4137 (	4040		record_ops		PGNSP PGUID ));
 DATA(insert OID = 4138 (	4040		text_ops		PGNSP PGUID ));
-#define TEXT_BTREE_FAM_OID 4138
+//#define TEXT_BTREE_FAM_OID 4138
 DATA(insert OID = 4139 (	4040		time_ops		PGNSP PGUID ));
 DATA(insert OID = 4140 (	4040		timetz_ops		PGNSP PGUID ));
 DATA(insert OID = 4141 (	4040		varbit_ops		PGNSP PGUID ));
 DATA(insert OID = 4142 (	4040		text_pattern_ops	PGNSP PGUID ));
-#define TEXT_PATTERN_BTREE_FAM_OID 4142
+//#define TEXT_PATTERN_BTREE_FAM_OID 4142
 DATA(insert OID = 4143 (	4040		bpchar_pattern_ops	PGNSP PGUID ));
-#define BPCHAR_PATTERN_BTREE_FAM_OID 4143
+//#define BPCHAR_PATTERN_BTREE_FAM_OID 4143
 DATA(insert OID = 4144 (	4040		money_ops		PGNSP PGUID ));
 DATA(insert OID = 4145 (	4040		tid_ops			PGNSP PGUID ));
 DATA(insert OID = 4146 (	4040		reltime_ops		PGNSP PGUID ));

@@ -384,9 +384,71 @@ DATA(insert (	3474   3831 3831 5 3473 ));
 
 
 /* idist */
+
+DATA(insert (	4121   2277 2277 1 382 ));
+DATA(insert (	4120   702 702 1 357 ));
+DATA(insert (	4122   1560 1560 1 1596 ));
+DATA(insert (	4123   16 16 1 1693 ));
+DATA(insert (	4124   1042 1042 1 1078 ));
+DATA(insert (	4125   17 17 1 1954 ));
+DATA(insert (	4126   18 18 1 358 ));
+DATA(insert (	4127   1082 1082 1 1092 ));
+DATA(insert (	4127   1082 1082 2 3136 ));
+DATA(insert (	4127   1082 1114 1 2344 ));
+DATA(insert (	4127   1082 1184 1 2357 ));
+DATA(insert (	4127   1114 1114 1 2045 ));
+DATA(insert (	4127   1114 1114 2 3137 ));
+DATA(insert (	4127   1114 1082 1 2370 ));
+DATA(insert (	4127   1114 1184 1 2526 ));
+DATA(insert (	4127   1184 1184 1 1314 ));
+DATA(insert (	4127   1184 1184 2 3137 ));
+DATA(insert (	4127   1184 1082 1 2383 ));
+DATA(insert (	4127   1184 1114 1 2533 ));
+DATA(insert (	4128   700 700 1 354 ));
+DATA(insert (	4128   700 700 2 3132 ));
+DATA(insert (	4128   700 701 1 2194 ));
+DATA(insert (	4128   701 701 1 355 ));
+DATA(insert (	4128   701 701 2 3133 ));
+DATA(insert (	4128   701 700 1 2195 ));
+DATA(insert (	4129   869 869 1 926 ));
+DATA(insert (	4130   21 21 1 350 ));
+DATA(insert (	4130   21 21 2 3129 ));
+DATA(insert (	4130   21 23 1 2190 ));
+DATA(insert (	4130   21 20 1 2192 ));
+DATA(insert (	4130   23 23 1 351 ));
+DATA(insert (	4130   23 23 2 3130 ));
+DATA(insert (	4130   23 20 1 2188 ));
+DATA(insert (	4130   23 21 1 2191 ));
+DATA(insert (	4130   20 20 1 842 ));
+DATA(insert (	4130   20 20 2 3131 ));
+DATA(insert (	4130   20 23 1 2189 ));
+DATA(insert (	4130   20 21 1 2193 ));
+DATA(insert (	4131   1186 1186 1 1315 ));
+DATA(insert (	4132   829 829 1 836 ));
+DATA(insert (	4133   19 19 1 359 ));
+DATA(insert (	4133   19 19 2 3135 ));
+DATA(insert (	4134   1700 1700 1 1769 ));
+DATA(insert (	4135   26 26 1 356 ));
+DATA(insert (	4135   26 26 2 3134 ));
+DATA(insert (	4136   30 30 1 404 ));
+DATA(insert (	4137   2249 2249 1 2987 ));
+DATA(insert (	4138   25 25 1 360 ));
+DATA(insert (	4139   1083 1083 1 1107 ));
+DATA(insert (	4140   1266 1266 1 1358 ));
+DATA(insert (	4141   1562 1562 1 1672 ));
+DATA(insert (	4142   25 25 1 2166 ));
+DATA(insert (	4143   1042 1042 1 2180 ));
+DATA(insert (	4144   790 790 1  377 ));
+DATA(insert (	4146   703 703 1  380 ));
+DATA(insert (	4147   704 704 1  381 ));
+DATA(insert (	4145   27 27 1 2794 ));
+DATA(insert (	4148   2950 2950 1 2960 ));
+DATA(insert (	4149   3500 3500 1 3514 ));
+
+/*
 DATA(insert (	4121   2277 2277 1 4195 ));
 DATA(insert (	4120   702 702 1 4188 ));
-DATA(insert (	4122   1560 1560 1 1596 )); /* */
+DATA(insert (	4122   1560 1560 1 1596 ));
 DATA(insert (	4123   16 16 1 4197 ));
 DATA(insert (	4124   1042 1042 1 1078 )); 
 DATA(insert (	4125   17 17 1 1954 )); 
@@ -443,6 +505,7 @@ DATA(insert (	4147   704 704 1  4194 ));
 DATA(insert (	4145   27 27 1 4196 ));
 DATA(insert (	4148   2950 2950 1 2960 ));
 DATA(insert (	4149   3500 3500 1 3514 ));
+*/
 
 
 /************************************************************/

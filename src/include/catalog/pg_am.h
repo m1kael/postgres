@@ -134,7 +134,7 @@ DESCR("SP-GiST index access method");
 #define SPGIST_AM_OID 4000
 /*******************************************************/
 
-DATA(insert OID = 4040 (  idist		5 2 t f t t t t t t f t t 0 idbtinsert idbtbeginscan idbtgettuple idbtgetbitmap idbtrescan idbtendscan idbtmarkpos idbtrestrpos idbtbuild idbtbuildempty idbtbulkdelete idbtvacuumcleanup idbtcanreturn idbtcostestimate idbtoptions ));
+DATA(insert OID = 4040 (  idist		5 2 t f t t t t t t f t t 0 idbtinsert idbtbeginscan idbtgettuple idbtgetbitmap idbtrescan idbtendscan idbtmarkpos idbtrestrpos idbtbuild idbtbuildempty idbtbulkdelete idbtvacuumcleanup idbtcanreturn btcostestimate idbtoptions ));
 DESCR("idist index access method");
 #define IDIST_AM_OID 4040
  
